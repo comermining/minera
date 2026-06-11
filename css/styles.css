@@ -545,3 +545,18 @@ body {
         max-width: 140px !important;
     }
 }
+
+/* ===== SCROLL HORIZONTAL - SECCIÓN VENTAS ===== */
+@media (max-width: 991.98px) {
+.ventas-scroll {
+flex-wrap: nowrap !important;
+overflow-x: auto !important;
+-webkit-overflow-scrolling: touch;
+padding-bottom: 10px;
+}
+
+.ventas-scroll > [class*="col-"] {
+flex: 0 0 150px !important;
+max-width: 150px !important;
+}
+}
