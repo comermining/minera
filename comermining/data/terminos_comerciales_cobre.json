@@ -1,0 +1,58 @@
+{
+  "cobre": {
+    "pagable": {
+      "valor": 100,
+      "unidad": "%"
+    },
+    "deduccion": {
+      "valor": 1.25,
+      "unidad": "%"
+    },
+    "gastosRefinacion": {
+      "valor": 0.12,
+      "unidad": "$/lb"
+    },
+    "proteccion": {
+      "valor": 0.05,
+      "unidad": "$/lb"
+    }
+  },
+  "plata": {
+    "pagable": {
+      "valor": 90,
+      "unidad": "%"
+    },
+    "deduccion": {
+      "valor": 2.50,
+      "unidad": "Oz/TC"
+    },
+    "gastosRefinacion": {
+      "valor": 5.00,
+      "unidad": "$/oz"
+    }
+  },
+  "oro": {
+    "pagable": {
+      "valor": 90,
+      "unidad": "%"
+    },
+    "deduccion": {
+      "valor": 0.08,
+      "unidad": "Oz/TC"
+    },
+    "gastosRefinacion": {
+      "valor": 12.00,
+      "unidad": "$/oz"
+    }
+  },
+  "gastosGenerales": {
+    "maquila": {
+      "valor": 115.00,
+      "unidad": "$/TMS"
+    },
+    "proteccionGeneral": {
+      "valor": 0.03,
+      "unidad": "$/TMS"
+    }
+  }
+}

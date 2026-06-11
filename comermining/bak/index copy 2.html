@@ -1,0 +1,526 @@
+<!-- VISTA: CONCENTRADO DE COBRE - VALORIZACIÓN PROFESIONAL -->
+<div class="concentrado-view">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <button class="btn-back" onclick="window.loadDefaultView && loadDefaultView()">
+                <i class="bi bi-arrow-left"></i> Volver al inicio
+            </button>
+        </div>
+        <h2 class="fw-bold" style="color: #0a2a36;">
+            <i class="bi bi-gem text-warning"></i> Valorización de Concentrado de Cobre
+        </h2>
+        <div class="text-muted">
+            <i class="bi bi-info-circle"></i> 
+            <span id="cotizacionIndicator">Cargando cotización...</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- COLUMNA IZQUIERDA: Datos Editables -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-pencil-square text-warning"></i> Datos del Mineral (Editables)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Leyes del Mineral -->
+                    <h6 class="fw-bold mb-3"><i class="bi bi-flask"></i> Leyes del Mineral</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small">Cu (%)</label>
+                            <input type="number" id="leyCu" class="form-control" step="0.0001" value="0.2908">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small">Au (g/TM)</label>
+                            <input type="number" id="leyAu" class="form-control" step="0.01" value="77.52">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small">Ag (Oz/TC)</label>
+                            <input type="number" id="leyAg" class="form-control" step="0.0001" value="1.2831">
+                        </div>
+                    </div>
+
+                    <!-- Contaminantes -->
+                    <h6 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle"></i> Contaminantes (%)</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label small">Arsénico (As)</label>
+                            <input type="number" id="contAs" class="form-control" step="0.01" value="0.06">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">Antimonio (Sb)</label>
+                            <input type="number" id="contSb" class="form-control" step="0.01" value="0.01">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">Bismuto (Bi)</label>
+                            <input type="number" id="contBi" class="form-control" step="0.01" value="0.01">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">Zinc (Zn)</label>
+                            <input type="number" id="contZn" class="form-control" step="0.01" value="0.048">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small">Plomo (Pb)</label>
+                            <input type="number" id="contPb" class="form-control" step="0.01" value="0.039">
+                        </div>
+                    </div>
+
+                    <!-- Cotizaciones -->
+                    <h6 class="fw-bold mb-3"><i class="bi bi-currency-dollar"></i> Cotizaciones</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small">Cobre (Cu)</label>
+                            <div class="input-group">
+                                <input type="number" id="precioCu" class="form-control" step="0.01" value="2.68">
+                                <span class="input-group-text">$/lb</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small">Oro (Au)</label>
+                            <div class="input-group">
+                                <input type="number" id="precioAu" class="form-control" step="1" value="1427">
+                                <span class="input-group-text">$/oz</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small">Plata (Ag)</label>
+                            <div class="input-group">
+                                <input type="number" id="precioAg" class="form-control" step="0.1" value="27">
+                                <span class="input-group-text">$/oz</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parámetros Físicos -->
+                    <h6 class="fw-bold mb-3"><i class="bi bi-rulers"></i> Parámetros Físicos</h6>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold small">TMH</label>
+                            <input type="number" id="tmh" class="form-control" step="0.01" value="25">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold small">Humedad (%)</label>
+                            <input type="number" id="humedad" class="form-control" step="0.01" value="10">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold small">Merma (%)</label>
+                            <input type="number" id="merma" class="form-control" step="0.001" value="0.5">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold small">IGV (%)</label>
+                            <input type="number" id="igv" class="form-control" step="0.5" value="18">
+                        </div>
+                    </div>
+
+                    <!-- Conversiones en tiempo real -->
+                    <div class="bg-light rounded-3 p-3 mt-4">
+                        <div class="row text-center small">
+                            <div class="col-4">
+                                <span class="text-muted">TMS (Base seca):</span>
+                                <span class="fw-bold d-block" id="tmsPreview">0.00</span>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-muted">Después de merma:</span>
+                                <span class="fw-bold d-block" id="tmsFinalPreview">0.00</span>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-muted">Equivalente Cu $/TM:</span>
+                                <span class="fw-bold d-block" id="precioCuTm">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Términos Comerciales (NO editables) -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-file-text-fill text-secondary"></i> Términos Comerciales
+                    </h5>
+                    <small class="text-muted">Los términos no son editables</small>
+                </div>
+                <div class="card-body">
+                    <!-- COBRE (Cu) -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">COBRE (Cu)</div>
+                        <div class="row g-2">
+                            <div class="col-7"><label class="form-label small">Pagable Cu</label></div>
+                            <div class="col-5"><input type="text" id="terminoPagableCu" class="form-control form-control-sm" readonly value="100%"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Deducción Cu</label></div>
+                            <div class="col-5"><input type="text" id="terminoDeduccionCu" class="form-control form-control-sm" readonly value="1.25%"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Gastos x refCu</label></div>
+                            <div class="col-5"><input type="text" id="terminoGastosRefCu" class="form-control form-control-sm" readonly value="0.12 $/lb"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Protección Cu</label></div>
+                            <div class="col-5"><input type="text" id="terminoProteccionCu" class="form-control form-control-sm" readonly value="0.05 $/lb"></div>
+                        </div>
+                    </div>
+
+                    <!-- PLATA (Ag) -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">PLATA (Ag)</div>
+                        <div class="row g-2">
+                            <div class="col-7"><label class="form-label small">Pagable Ag</label></div>
+                            <div class="col-5"><input type="text" id="terminoPagableAg" class="form-control form-control-sm" readonly value="90%"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Deducción Ag</label></div>
+                            <div class="col-5"><input type="text" id="terminoDeduccionAg" class="form-control form-control-sm" readonly value="2.50 Oz/TC"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Gastos x refAg</label></div>
+                            <div class="col-5"><input type="text" id="terminoGastosRefAg" class="form-control form-control-sm" readonly value="5.00 $/oz"></div>
+                        </div>
+                    </div>
+
+                    <!-- ORO (Au) -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">ORO (Au)</div>
+                        <div class="row g-2">
+                            <div class="col-7"><label class="form-label small">Pagable Au</label></div>
+                            <div class="col-5"><input type="text" id="terminoPagableAu" class="form-control form-control-sm" readonly value="90%"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Deducción Au</label></div>
+                            <div class="col-5"><input type="text" id="terminoDeduccionAu" class="form-control form-control-sm" readonly value="0.08 Oz/TC"></div>
+                            
+                            <div class="col-7"><label class="form-label small">Gastos x refAu</label></div>
+                            <div class="col-5"><input type="text" id="terminoGastosRefAu" class="form-control form-control-sm" readonly value="12.00 $/oz"></div>
+                        </div>
+                    </div>
+
+                    <!-- GASTOS GENERALES -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">GASTOS GENERALES</div>
+                        <div class="row g-2">
+                            <div class="col-7"><label class="form-label small">Maquila</label></div>
+                            <div class="col-5"><input type="text" id="terminoMaquila" class="form-control form-control-sm" readonly value="115.00 $"></div>
+                            
+                            <div class="col-7"><label class="form-label small fw-bold text-warning">Protec. Cu</label></div>
+                            <div class="col-5"><input type="text" id="terminoProteccionGeneral" class="form-control form-control-sm bg-warning bg-opacity-10" readonly value="0.03"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light small mt-3 mb-0">
+                        <i class="bi bi-info-circle"></i> <strong>Protec. Cu:</strong> Protección por variación del precio del cobre.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón Calcular y Resultados -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header" style="background: linear-gradient(135deg, #0a2a36, #1a4a5a); color: white;">
+                    <h5 class="card-title fw-bold mb-0">
+                        <i class="bi bi-calculator-fill me-2"></i> Resultados de Valorización
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <button class="btn btn-warning btn-lg px-5 py-2 fw-bold" onclick="calcularValorizacionCompleta()">
+                            <i class="bi bi-calculator me-2"></i> Calcular Valorización
+                        </button>
+                    </div>
+
+                    <div id="resultadosValorizacion" style="display: none;">
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="bg-secondary bg-opacity-10 rounded-3 p-3">
+                                    <h6 class="fw-bold mb-2"><i class="bi bi-clipboard-data"></i> Datos del Lote</h6>
+                                    <div class="row small">
+                                        <div class="col-md-3"><span class="text-muted">TMH:</span> <span class="fw-bold" id="infoTMH">0</span></div>
+                                        <div class="col-md-3"><span class="text-muted">Humedad:</span> <span class="fw-bold" id="infoHumedad">0%</span></div>
+                                        <div class="col-md-3"><span class="text-muted">Merma:</span> <span class="fw-bold" id="infoMerma">0%</span></div>
+                                        <div class="col-md-3"><span class="text-muted">TMS Neto:</span> <span class="fw-bold" id="infoTMS">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="bg-light rounded-3 p-3 text-center">
+                                    <small class="text-muted">Pago Cobre</small>
+                                    <h4 class="fw-bold text-primary" id="pagoCu">$0.00</h4>
+                                    <small class="text-muted" id="detallePagoCu">-</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-light rounded-3 p-3 text-center">
+                                    <small class="text-muted">Pago Oro</small>
+                                    <h4 class="fw-bold text-warning" id="pagoAu">$0.00</h4>
+                                    <small class="text-muted" id="detallePagoAu">-</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-light rounded-3 p-3 text-center">
+                                    <small class="text-muted">Pago Plata</small>
+                                    <h4 class="fw-bold text-secondary" id="pagoAg">$0.00</h4>
+                                    <small class="text-muted" id="detallePagoAg">-</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <div class="d-flex justify-content-between">
+                                <span><strong>Subtotal Pagos (por TMS):</strong></span>
+                                <span><strong id="subtotalPagos">$0.00</strong></span>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold mt-3">Deducciones (por TMS)</h6>
+                        <table class="table table-sm table-bordered">
+                            <tr><td style="width: 70%;">Maquila</td><td class="text-end" id="dedMaquila">$0.00</td></tr>
+                            <tr><td>Gastos Refinación Cu</td><td class="text-end" id="dedRefCu">$0.00</td></tr>
+                            <tr><td>Gastos Refinación Au</td><td class="text-end" id="dedRefAu">$0.00</td></tr>
+                            <tr><td>Gastos Refinación Ag</td><td class="text-end" id="dedRefAg">$0.00</td></tr>
+                            <tr><td>Penalidades (As+Sb)</td><td class="text-end" id="penalidadAsSb">$0.00</td></tr>
+                            <tr><td>Protec. Cu</td><td class="text-end" id="dedProteccionGeneral">$0.00</td></tr>
+                            <tr class="table-warning"><td><strong>Total Deducciones</strong></td><td class="text-end"><strong id="totalDeducciones">$0.00</strong></td></tr>
+                        </table>
+
+                        <div class="alert alert-success">
+                            <div class="d-flex justify-content-between">
+                                <span><strong>Valor por TMS (sin IGV):</strong></span>
+                                <span><strong id="valorPorTM">$0.00</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-dark mt-3">
+                            <div class="d-flex justify-content-between">
+                                <span><strong>Valor Total (sin IGV):</strong></span>
+                                <span><strong id="valorTotalSinIGV">$0.00</strong></span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2 pt-2 border-top">
+                                <span><strong>IGV:</strong></span>
+                                <span><strong id="valorIGV">$0.00</strong></span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2 pt-2 border-top border-success">
+                                <span><strong class="fs-5">VALOR TOTAL CON IGV:</strong></span>
+                                <span><strong class="fs-5 text-primary" id="valorTotalConIGV">$0.00</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4 bg-light">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-lightbulb"></i> Fórmulas Utilizadas</h6>
+                    <div class="row small">
+                        <div class="col-md-6">
+                            <ul class="mb-0">
+                                <li><strong>TMS</strong> = TMH × (1 - Humedad/100)</li>
+                                <li><strong>TMS Neto</strong> = TMS × (1 - Merma/100)</li>
+                                <li><strong>Pago Cu</strong> = (Ley Cu - Deducción Cu%) × Pagable Cu% × (Precio Cu $/lb × 2204.62)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="mb-0">
+                                <li><strong>Pago Au</strong> = (Au g/TM × 0.03215 - Deducción Au Oz) × Pagable Au% × Precio Au $/oz</li>
+                                <li><strong>Pago Ag</strong> = (Ag Oz/TC × 0.907 - Deducción Ag Oz) × Pagable Ag% × Precio Ag $/oz</li>
+                                <li><strong>Penalidad As+Sb</strong> = (Excedente % - 0.3) / 0.1 × 3.5</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Términos comerciales fijos (según la imagen)
+const terminosData = {
+    pagableCu: 100,
+    deduccionCu: 1.25,
+    gastosRefCu: 0.12,
+    proteccionCu: 0.05,
+    pagableAg: 90,
+    deduccionAg: 2.50,
+    gastosRefAg: 5.00,
+    pagableAu: 90,
+    deduccionAu: 0.08,
+    gastosRefAu: 12.00,
+    maquila: 115.00,
+    proteccionGeneral: 0.03
+};
+
+// Función principal de valorización
+function calcularValorizacionCompleta() {
+    // Datos del mineral (editables)
+    const leyCu = parseFloat(document.getElementById('leyCu').value) || 0;
+    const leyAu = parseFloat(document.getElementById('leyAu').value) || 0;
+    const leyAg = parseFloat(document.getElementById('leyAg').value) || 0;
+    
+    // Parámetros físicos (editables)
+    const tmh = parseFloat(document.getElementById('tmh').value) || 0;
+    const humedad = parseFloat(document.getElementById('humedad').value) || 0;
+    const merma = parseFloat(document.getElementById('merma').value) || 0;
+    const igv = parseFloat(document.getElementById('igv').value) || 18;
+    
+    // Cotizaciones (editables)
+    const precioCuLb = parseFloat(document.getElementById('precioCu').value) || 0;
+    const precioAuOz = parseFloat(document.getElementById('precioAu').value) || 0;
+    const precioAgOz = parseFloat(document.getElementById('precioAg').value) || 0;
+    
+    // Contaminantes
+    const as = parseFloat(document.getElementById('contAs').value) || 0;
+    const sb = parseFloat(document.getElementById('contSb').value) || 0;
+    const asSb = as + sb;
+    
+    // Términos comerciales
+    const pagableCu = terminosData.pagableCu / 100;
+    const deduccionCu = terminosData.deduccionCu / 100;
+    const gastosRefCu = terminosData.gastosRefCu;
+    const proteccionCu = terminosData.proteccionCu;
+    
+    const pagableAg = terminosData.pagableAg / 100;
+    const deduccionAg = terminosData.deduccionAg;
+    const gastosRefAg = terminosData.gastosRefAg;
+    
+    const pagableAu = terminosData.pagableAu / 100;
+    const deduccionAu = terminosData.deduccionAu;
+    const gastosRefAu = terminosData.gastosRefAu;
+    
+    const maquila = terminosData.maquila;
+    const proteccionGeneral = terminosData.proteccionGeneral;
+    
+    // Constantes
+    const LB_POR_TM = 2204.62;
+    const TC_A_TM = 0.907185;
+    const OZ_POR_G = 0.0321507;
+    
+    // Conversiones
+    const deduccionAgOzTM = deduccionAg * TC_A_TM;
+    const deduccionAuOzTM = deduccionAu * TC_A_TM;
+    const leyAgOzTM = leyAg * TC_A_TM;
+    const leyAuOzTM = leyAu * OZ_POR_G;
+    
+    // Tonelaje neto
+    const tms = tmh * (1 - humedad / 100);
+    const tmsNeto = tms * (1 - merma / 100);
+    
+    // PAGOS
+    const leyCuPagable = Math.max(0, leyCu - deduccionCu);
+    const precioCuTm = precioCuLb * LB_POR_TM;
+    const pagoCu = leyCuPagable * pagableCu * precioCuTm;
+    
+    const leyAuPagable = Math.max(0, leyAuOzTM - deduccionAuOzTM);
+    const pagoAu = leyAuPagable * pagableAu * precioAuOz;
+    
+    const leyAgPagable = Math.max(0, leyAgOzTM - deduccionAgOzTM);
+    const pagoAg = leyAgPagable * pagableAg * precioAgOz;
+    
+    const subtotalPagos = pagoCu + pagoAu + pagoAg;
+    
+    // DEDUCCIONES
+    const dedMaquila = maquila;
+    const contenidoCu = leyCuPagable * pagableCu;
+    const dedRefCu = contenidoCu * (gastosRefCu + proteccionCu) * LB_POR_TM;
+    const contenidoAu = leyAuPagable * pagableAu;
+    const dedRefAu = contenidoAu * gastosRefAu;
+    const contenidoAg = leyAgPagable * pagableAg;
+    const dedRefAg = contenidoAg * gastosRefAg;
+    const dedProteccionGeneral = proteccionGeneral;
+    
+    // Penalidades (As+Sb > 0.3%)
+    let penalidadAsSb = 0;
+    const limiteAsSb = 0.3;
+    const porCadaAsSb = 0.1;
+    const penalidadAsSbValor = 3.5;
+    if (asSb > limiteAsSb) {
+        const exceso = asSb - limiteAsSb;
+        penalidadAsSb = Math.ceil(exceso / porCadaAsSb) * penalidadAsSbValor;
+    }
+    
+    const totalDeducciones = dedMaquila + dedRefCu + dedRefAu + dedRefAg + penalidadAsSb + dedProteccionGeneral;
+    
+    // Valor final
+    const valorPorTMS = subtotalPagos - totalDeducciones;
+    const valorTotalSinIGV = valorPorTMS * tmsNeto;
+    const valorIGV = valorTotalSinIGV * (igv / 100);
+    const valorTotalConIGV = valorTotalSinIGV + valorIGV;
+    
+    // Mostrar resultados
+    document.getElementById('resultadosValorizacion').style.display = 'block';
+    
+    document.getElementById('infoTMH').innerHTML = `${tmh.toLocaleString()} TMH`;
+    document.getElementById('infoHumedad').innerHTML = `${humedad}%`;
+    document.getElementById('infoMerma').innerHTML = `${merma}%`;
+    document.getElementById('infoTMS').innerHTML = `${tmsNeto.toFixed(2)} TMS`;
+    
+    document.getElementById('detallePagoCu').innerHTML = `${(leyCuPagable * 100).toFixed(3)}% Cu pagable`;
+    document.getElementById('detallePagoAu').innerHTML = `${leyAuPagable.toFixed(4)} oz/TM pagable`;
+    document.getElementById('detallePagoAg').innerHTML = `${leyAgPagable.toFixed(4)} oz/TM pagable`;
+    
+    document.getElementById('pagoCu').innerHTML = `$${pagoCu.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('pagoAu').innerHTML = `$${pagoAu.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('pagoAg').innerHTML = `$${pagoAg.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('subtotalPagos').innerHTML = `$${subtotalPagos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    
+    document.getElementById('dedMaquila').innerHTML = `$${dedMaquila.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('dedRefCu').innerHTML = `$${dedRefCu.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('dedRefAu').innerHTML = `$${dedRefAu.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('dedRefAg').innerHTML = `$${dedRefAg.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('penalidadAsSb').innerHTML = `$${penalidadAsSb.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('dedProteccionGeneral').innerHTML = `$${dedProteccionGeneral.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('totalDeducciones').innerHTML = `$${totalDeducciones.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    
+    document.getElementById('valorPorTM').innerHTML = `$${valorPorTMS.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('valorTotalSinIGV').innerHTML = `$${valorTotalSinIGV.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('valorIGV').innerHTML = `$${valorIGV.toLocaleString('en-US', {minimumFractionDigits: 2})} (${igv}%)`;
+    document.getElementById('valorTotalConIGV').innerHTML = `$${valorTotalConIGV.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    
+    mostrarMensaje(`✅ Valorización calculada: ${tmsNeto.toFixed(2)} TMS netos = $${valorTotalConIGV.toLocaleString()} USD (con IGV)`);
+}
+
+function actualizarPreviews() {
+    const tmh = parseFloat(document.getElementById('tmh')?.value) || 0;
+    const humedad = parseFloat(document.getElementById('humedad')?.value) || 0;
+    const merma = parseFloat(document.getElementById('merma')?.value) || 0;
+    
+    const tms = tmh * (1 - humedad / 100);
+    const tmsNeto = tms * (1 - merma / 100);
+    const precioLb = parseFloat(document.getElementById('precioCu')?.value) || 0;
+    const precioTm = precioLb * 2204.62;
+    
+    const tmsPreview = document.getElementById('tmsPreview');
+    const tmsFinalPreview = document.getElementById('tmsFinalPreview');
+    const precioCuTm = document.getElementById('precioCuTm');
+    
+    if (tmsPreview) tmsPreview.innerText = tms.toFixed(2);
+    if (tmsFinalPreview) tmsFinalPreview.innerText = tmsNeto.toFixed(2);
+    if (precioCuTm) precioCuTm.innerText = precioTm.toFixed(0);
+}
+
+function mostrarMensaje(texto) {
+    const toastMsg = document.getElementById('toastMsg');
+    if (toastMsg) toastMsg.innerText = texto;
+    const toastEl = document.getElementById('liveToast');
+    if (toastEl) new bootstrap.Toast(toastEl).show();
+}
+
+// Event listeners
+document.getElementById('precioCu')?.addEventListener('input', actualizarPreviews);
+document.getElementById('tmh')?.addEventListener('input', actualizarPreviews);
+document.getElementById('humedad')?.addEventListener('input', actualizarPreviews);
+document.getElementById('merma')?.addEventListener('input', actualizarPreviews);
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', () => {
+    actualizarPreviews();
+});
+</script>

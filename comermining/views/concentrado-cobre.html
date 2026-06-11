@@ -1,0 +1,425 @@
+<!-- VISTA: CONCENTRADO DE COBRE - VALORIZACIÓN PROFESIONAL -->
+<div class="concentrado-view">
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <button class="btn-back" onclick="window.loadDefaultView && loadDefaultView()">
+                <i class="bi bi-arrow-left"></i> Volver al inicio
+            </button>
+        </div>
+        <h2 class="fw-bold" style="color: #0a2a36;">
+            <i class="bi bi-gem text-warning"></i> Valorización de Concentrado de Cobre
+        </h2>
+    </div>
+
+    <div class="row">
+        <!-- COLUMNA IZQUIERDA: Datos Editables -->
+        <div class="col-lg-7 mb-4">
+            <!-- PARA QUIÉN VA DIRIGIDO -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-building text-warning"></i> PARA QUIÉN VA DIRIGIDO EL CÁLCULO
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold small">Ingrese el nombre</label>
+                            <input type="text" id="nombreCliente" class="form-control" placeholder="Nombre" value="Cliente Ejemplo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DATOS DEL MINERAL -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-calculator-fill text-warning"></i> DATOS DEL MINERAL
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Toneladas Métricas Húmedas</label></div>
+                        <div class="col-4"><input type="number" id="tmh" class="form-control" step="0.01" value="26.83"></div>
+                        <div class="col-3"><span class="form-text text-muted">TMH</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Humedad</label></div>
+                        <div class="col-4"><input type="number" id="humedad" class="form-control" step="0.01" value="3.95"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Merma</label></div>
+                        <div class="col-4"><input type="number" id="merma" class="form-control" step="0.001" value="0.7"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">IGV</label></div>
+                        <div class="col-4"><input type="number" id="igv" class="form-control" step="0.5" value="18"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small">TMS Neto</label></div>
+                        <div class="col-4"><input type="text" id="tmsNetoPreview" class="form-control bg-light" readonly></div>
+                        <div class="col-3"><span class="form-text text-muted">TMS</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEYES -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-flask text-warning"></i> LEYES
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">COBRE Cu</label></div>
+                        <div class="col-4"><input type="number" id="leyCu" class="form-control" step="0.001" value="28.00"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">ORO Au</label></div>
+                        <div class="col-4"><input type="number" id="leyAu" class="form-control" step="0.001" value="2.009"></div>
+                        <div class="col-3"><span class="form-text text-muted">Oz/TC</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small">PLATA Ag</label></div>
+                        <div class="col-4"><input type="number" id="leyAg" class="form-control" step="0.001" value="58.01"></div>
+                        <div class="col-3"><span class="form-text text-muted">Oz/TC</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTAMINANTES -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-exclamation-triangle text-warning"></i> CONTAMINANTES
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">ARSENICO As</label></div>
+                        <div class="col-4"><input type="number" id="contAs" class="form-control" step="0.001" value="0.06"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">ANTIMONIO Sb</label></div>
+                        <div class="col-4"><input type="number" id="contSb" class="form-control" step="0.001" value="0.01"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">BISMUTO Bi</label></div>
+                        <div class="col-4"><input type="number" id="contBi" class="form-control" step="0.001" value="0.00"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">ZINC Zn</label></div>
+                        <div class="col-4"><input type="number" id="contZn" class="form-control" step="0.001" value="0.048"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">PLOMO Pb</label></div>
+                        <div class="col-4"><input type="number" id="contPb" class="form-control" step="0.001" value="0.039"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label small">Mercurio Hg</label></div>
+                        <div class="col-4"><input type="number" id="contHg" class="form-control" step="0.001" value="45.00"></div>
+                        <div class="col-3"><span class="form-text text-muted">ppm</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COTIZACIONES -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-currency-dollar text-warning"></i> COTIZACIONES
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Cobre Cu</label></div>
+                        <div class="col-4"><input type="number" id="precioCu" class="form-control" step="0.001" value="2.73515"></div>
+                        <div class="col-3"><span class="form-text text-muted">$/lb</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Oro Au</label></div>
+                        <div class="col-4"><input type="number" id="precioAu" class="form-control" step="1" value="1900"></div>
+                        <div class="col-3"><span class="form-text text-muted">$/Oz</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small">Plata Ag</label></div>
+                        <div class="col-4"><input type="number" id="precioAg" class="form-control" step="0.1" value="27"></div>
+                        <div class="col-3"><span class="form-text text-muted">$/Oz</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALISIS QUIMICO -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-file-text text-warning"></i> ANALISIS QUIMICO
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small"></label></div>
+                        <div class="col-4"><input type="number" id="analisisQuimico" class="form-control" step="0.01" value="100.00"></div>
+                        <div class="col-3"><span class="form-text text-muted">$</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Términos Comerciales (NO editables) -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-file-text-fill text-secondary"></i> Términos Comerciales
+                    </h5>
+                    <small class="text-muted">Los términos no son editables</small>
+                </div>
+                <div class="card-body">
+                    <!-- COBRE (Cu) -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">COBRE (Cu)</div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">% Pagable Cu</label></div>
+                            <div class="col-4"><input type="text" id="terminoPagableCu" class="form-control form-control-sm text-end" readonly value="100"></div>
+                            <div class="col-3"><span class="form-text small">%</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Deducción Cu</label></div>
+                            <div class="col-4"><input type="text" id="terminoDeduccionCu" class="form-control form-control-sm text-end" readonly value="1.25"></div>
+                            <div class="col-3"><span class="form-text small">%</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Gastos x refCu</label></div>
+                            <div class="col-4"><input type="text" id="terminoGastosRefCu" class="form-control form-control-sm text-end" readonly value="0.12"></div>
+                            <div class="col-3"><span class="form-text small">$/lb</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Protección Cu</label></div>
+                            <div class="col-4"><input type="text" id="terminoProteccionCu" class="form-control form-control-sm text-end" readonly value="0.05"></div>
+                            <div class="col-3"><span class="form-text small">$/lb</span></div>
+                        </div>
+                    </div>
+
+                    <!-- PLATA (Ag) -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">PLATA (Ag)</div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">% Pagable Ag</label></div>
+                            <div class="col-4"><input type="text" id="terminoPagableAg" class="form-control form-control-sm text-end" readonly value="90"></div>
+                            <div class="col-3"><span class="form-text small">%</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Deducción Ag</label></div>
+                            <div class="col-4"><input type="text" id="terminoDeduccionAg" class="form-control form-control-sm text-end" readonly value="2.5"></div>
+                            <div class="col-3"><span class="form-text small">Oz/TC</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Gastos x refAg</label></div>
+                            <div class="col-4"><input type="text" id="terminoGastosRefAg" class="form-control form-control-sm text-end" readonly value="5.00"></div>
+                            <div class="col-3"><span class="form-text small">$/oz</span></div>
+                        </div>
+                    </div>
+
+                    <!-- ORO (Au) -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">ORO (Au)</div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">% Pagable Au</label></div>
+                            <div class="col-4"><input type="text" id="terminoPagableAu" class="form-control form-control-sm text-end" readonly value="90"></div>
+                            <div class="col-3"><span class="form-text small">%</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Deducción Au</label></div>
+                            <div class="col-4"><input type="text" id="terminoDeduccionAu" class="form-control form-control-sm text-end" readonly value="0.08"></div>
+                            <div class="col-3"><span class="form-text small">Oz/TC</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Gastos x refAu</label></div>
+                            <div class="col-4"><input type="text" id="terminoGastosRefAu" class="form-control form-control-sm text-end" readonly value="12.00"></div>
+                            <div class="col-3"><span class="form-text small">$/oz</span></div>
+                        </div>
+                    </div>
+
+                    <!-- GASTOS GENERALES -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">GASTOS GENERALES</div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small">Maquila</label></div>
+                            <div class="col-4"><input type="text" id="terminoMaquila" class="form-control form-control-sm text-end" readonly value="115.00"></div>
+                            <div class="col-3"><span class="form-text small">$/TMS</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-5"><label class="form-label small fw-bold text-warning">Protec. Cu</label></div>
+                            <div class="col-4"><input type="text" id="terminoProteccionGeneral" class="form-control form-control-sm text-end bg-warning bg-opacity-10" readonly value="0.03"></div>
+                            <div class="col-3"><span class="form-text small">$/TMS</span></div>
+                        </div>
+                    </div>
+
+                    <!-- PENALIDADES -->
+                    <div class="mb-3">
+                        <div class="fw-bold small text-muted mb-2">PENALIDADES</div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-6"><label class="form-label small">As+Sb (Libre 0.3%, c/0.1%)</label></div>
+                            <div class="col-3"><input type="text" id="penalidadAsSbValor" class="form-control form-control-sm text-end" readonly value="3.50"></div>
+                            <div class="col-3"><span class="form-text small">$/exceso</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-6"><label class="form-label small">Pb+Zn (Libre 5%, c/0.5%)</label></div>
+                            <div class="col-3"><input type="text" id="penalidadPbZnValor" class="form-control form-control-sm text-end" readonly value="5.00"></div>
+                            <div class="col-3"><span class="form-text small">$/exceso</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-6"><label class="form-label small">Bi (Libre 0.05%, c/0.01%)</label></div>
+                            <div class="col-3"><input type="text" id="penalidadBiValor" class="form-control form-control-sm text-end" readonly value="6.00"></div>
+                            <div class="col-3"><span class="form-text small">$/exceso</span></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-6"><label class="form-label small">Hg (Libre 20 ppm, c/10 ppm)</label></div>
+                            <div class="col-3"><input type="text" id="penalidadHgValor" class="form-control form-control-sm text-end" readonly value="7.00"></div>
+                            <div class="col-3"><span class="form-text small">$/exceso</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light small mt-3 mb-0">
+                        <i class="bi bi-info-circle"></i> <strong>Protec. Cu:</strong> Protección por variación del precio del cobre.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE VALORIZACIÓN -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header" style="background: linear-gradient(135deg, #0a2a36, #1a4a5a); color: white;">
+                    <h5 class="card-title fw-bold mb-0">
+                        <i class="bi bi-calculator-fill me-2"></i> VALORIZACIÓN DE CONCENTRADO DE COBRE
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <button class="btn btn-warning btn-lg px-5 py-2 fw-bold" onclick="calcularValorizacionCompleta()">
+                            <i class="bi bi-calculator me-2"></i> CALCULAR VALORIZACIÓN
+                        </button>
+
+                        <button class="btn btn-success btn-lg px-5 py-2 fw-bold ms-3" onclick="generarPDF()">
+                            <i class="bi bi-file-pdf me-2"></i> GENERAR PDF
+                        </button>
+                    </div>
+
+                    <div id="tablaResultados">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" style="font-size: 0.85rem;">
+                                <!-- PAGOS -->
+                                <thead class="table-light">
+                                    <tr class="text-center"><th colspan="6">PAGOS</th> </tr>
+                                    <tr class="table-secondary">
+                                        <th style="width: 25%">Concepto</th>
+                                        <th style="width: 15%">Factor</th>
+                                        <th style="width: 10%">Operador</th>
+                                        <th style="width: 25%">Valor</th>
+                                        <th style="width: 15%">Unidad</th>
+                                        <th style="width: 10%">Resultado ($/TMS)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>COBRE (Cu)</strong></td>
+                                        <td class="text-end"><span id="pagoCuFactor">0.0000</span></td>
+                                        <td class="text-center">x</td>
+                                        <td class="text-end"><span id="pagoCuValor">0.00</span></td>
+                                        <td>$/TM</td>
+                                        <td class="text-end fw-bold text-primary"><span id="pagoCuResultado">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>ORO (Au)</strong></td>
+                                        <td class="text-end"><span id="pagoAuFactor">0.0000</span></td>
+                                        <td class="text-center">x</td>
+                                        <td class="text-end"><span id="pagoAuValor">0.00</span></td>
+                                        <td>$/Oz</td>
+                                        <td class="text-end fw-bold text-warning"><span id="pagoAuResultado">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PLATA (Ag)</strong></td>
+                                        <td class="text-end"><span id="pagoAgFactor">0.0000</span></td>
+                                        <td class="text-center">x</td>
+                                        <td class="text-end"><span id="pagoAgValor">0.00</span></td>
+                                        <td>$/Oz</td>
+                                        <td class="text-end fw-bold text-secondary"><span id="pagoAgResultado">0.00</span></td>
+                                    </tr>
+                                </tbody>
+
+                                <!-- DEDUCCIONES -->
+                                <thead class="table-light">
+                                    <tr class="text-center"><th colspan="6">DEDUCCIONES</th> </tr>
+                                    <tr class="table-secondary">
+                                        <th style="width: 25%">Concepto</th>
+                                        <th style="width: 15%">Factor</th>
+                                        <th style="width: 10%">Operador</th>
+                                        <th style="width: 25%">Valor</th>
+                                        <th style="width: 15%">Unidad</th>
+                                        <th style="width: 10%">Resultado ($/TMS)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Maquila</strong></td><td class="text-end">-</td><td class="text-center"></td><td class="text-end"><span id="dedMaquilaValor">0.00</span></td><td>$/TMS</td><td class="text-end text-danger"><span id="dedMaquilaResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Gastos Refinación Cu</strong></td><td class="text-end"><span id="refCuFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refCuValor">0.00</span></td><td>$/TM</td><td class="text-end text-danger"><span id="refCuResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Gastos Refinación Au</strong></td><td class="text-end"><span id="refAuFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refAuValor">0.00</span></td><td>$/Oz</td><td class="text-end text-danger"><span id="refAuResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Gastos Refinación Ag</strong></td><td class="text-end"><span id="refAgFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refAgValor">0.00</span></td><td>$/Oz</td><td class="text-end text-danger"><span id="refAgResultado">0.00</span></td></tr>
+                                </tbody>
+
+                                <!-- PENALIDADES -->
+                                <thead class="table-light">
+                                    <tr class="text-center"><th colspan="7">PENALIDADES</th> </tr>
+                                    <tr class="table-secondary">
+                                        <th style="width: 20%">Concepto</th>
+                                        <th style="width: 12%">Valor (O)</th>
+                                        <th style="width: 8%">Libre (P)</th>
+                                        <th style="width: 8%">Por cada (Q)</th>
+                                        <th style="width: 10%">Penalidad (R)</th>
+                                        <th style="width: 10%">Unidades</th>
+                                        <th style="width: 12%">Resultado ($/TMS)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>As+Sb</strong></td><td class="text-end"><span id="penalidadAsSbValorMostrar">0.00</span>%</td><td class="text-end">0.3%</td><td class="text-end">0.1%</td><td class="text-end">$3.50</td><td class="text-end"><span id="penalidadAsSbUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadAsSbResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Pb+Zn</strong></td><td class="text-end"><span id="penalidadPbZnValorMostrar">0.00</span>%</td><td class="text-end">5.0%</td><td class="text-end">0.5%</td><td class="text-end">$5.00</td><td class="text-end"><span id="penalidadPbZnUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadPbZnResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Bi</strong></td><td class="text-end"><span id="penalidadBiValorMostrar">0.00</span>%</td><td class="text-end">0.05%</td><td class="text-end">0.01%</td><td class="text-end">$6.00</td><td class="text-end"><span id="penalidadBiUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadBiResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Hg</strong></td><td class="text-end"><span id="penalidadHgValorMostrar">0.00</span> ppm</td><td class="text-end">20 ppm</td><td class="text-end">10 ppm</td><td class="text-end">$7.00</td><td class="text-end"><span id="penalidadHgUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadHgResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Servicios (Análisis)</strong></td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end text-danger"><span id="analisisResultado">0.00</span></td></tr>
+                                </tbody>
+
+                                <!-- RESULTADOS FINALES -->
+                                <tbody>
+                                    <tr class="table-warning"><td colspan="6"><strong>TOTAL DE DEDUCCIONES</strong></td><td class="text-end fw-bold text-danger fs-5"><span id="totalDeducciones">0.00</span></td></tr>
+                                    <tr class="table-success"><td colspan="6"><strong>TOTAL /TM (US $/TMS)</strong></td><td class="text-end fw-bold fs-5"><span id="valorPorTMS">0.00</span></td></tr>
+                                    <tr><td colspan="3"><strong>IGV %</strong></td><td colspan="4"><span id="igvPorcentaje">18</span>%</td></tr>
+                                    <tr class="table-primary"><td colspan="6"><strong class="fs-4">TOTAL POR LOTE (US $)</strong></td><td class="text-end"><strong class="fs-3 text-primary"><span id="valorTotalConIGV">$0.00</span></strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Librería html2pdf para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- Script principal -->
+<script src="js/views/concentrado-cobre.js"></script>

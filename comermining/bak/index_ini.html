@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minera Store | Portal de Minería</title>
+    <!-- Bootstrap CSS + iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f0f2f5; margin: 0; padding-top: 0; }
+
+        .layout-wrapper { 
+            display: flex; 
+            min-height: 100vh;
+            padding-top: 70px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: #0a2a36;
+            width: 260px;
+            min-width: 260px;
+            transition: width 0.3s ease, min-width 0.3s ease, transform 0.3s ease;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            bottom: 0;
+            z-index: 1020;
+            height: calc(100vh - 70px);
+        }
+        
+        .sidebar.collapsed {
+            width: 54px;
+            min-width: 54px;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: rgba(0,0,0,0.5);
+                z-index: 1019;
+                display: none;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+
+        .sidebar-inner {
+            width: 260px;
+            padding: 0.75rem 0.75rem 1rem 0.75rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-link-custom {
+            color: #cde5ef;
+            border-radius: 10px;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            text-decoration: none;
+            font-size: 0.88rem;
+        }
+        .nav-link-custom i { font-size: 1.1rem; flex-shrink: 0; width: 22px; text-align: center; }
+        .nav-link-custom:hover { background: rgba(246,184,61,0.2); color: #f6b83d; }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 12px 10px 4px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.72rem;
+            white-space: nowrap;
+        }
+
+        .main-content { 
+            margin-left: 260px; 
+            flex: 1; 
+            padding: 1.5rem 2rem; 
+            min-width: 0;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 54px;
+        }
+
+        @media (max-width: 991px) { 
+            .main-content { 
+                margin-left: 0 !important; 
+                padding: 1rem; 
+            }
+        }
+
+        /* TOP NAV */
+        .top-navbar {
+            background: #0a2a36 !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            padding: 0.5rem 1rem;
+        }
+        
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 0.5rem;
+        }
+        
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .menu-toggle-btn {
+            background: transparent;
+            border: none;
+            color: #f6b83d;
+            font-size: 1.6rem;
+            padding: 0.25rem 0.5rem;
+            margin: 0;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .menu-toggle-btn:hover { color: #ffd966; }
+        
+        .navbar-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .navbar-title .minera { color: #f6b83d; font-weight: 800; font-size: 1.3rem; }
+        .navbar-title .sub { font-size: 0.7rem; color: #cde5ef; letter-spacing: 2px; }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(246,184,61,0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            border: 1px solid rgba(246,184,61,0.3);
+        }
+        .user-info i { font-size: 1.1rem; color: #f6b83d; }
+        .user-info .user-text { color: white; font-size: 0.8rem; font-weight: 500; }
+        .user-info .user-text span { color: #f6b83d; font-weight: 600; }
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: #ff9999;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 0.5rem;
+        }
+        .logout-btn:hover { color: #ff6666; }
+        
+        @media (max-width: 576px) {
+            .navbar-title .minera { font-size: 1rem; }
+            .navbar-title .sub { font-size: 0.55rem; }
+            .user-info .user-text { font-size: 0.65rem; }
+            .user-info { padding: 0.3rem 0.7rem; }
+        }
+
+        /* TARJETAS PRINCIPALES con nuevo color de fondo */
+        .option-card {
+            border-radius: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 110px;
+            background: #f4f6f9 !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+        .option-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+            background: #ffffff !important;
+            border-color: #f6b83d;
+        }
+        .option-card i { font-size: 2rem; margin-bottom: 0.5rem; }
+        .option-card .fw-semibold { font-size: 0.75rem; line-height: 1.3; }
+        
+        .row.g-3 .col-6, .row.g-3 .col-sm-4, .row.g-3 .col-lg-2 { display: flex; }
+
+        /* ACORDEONES */
+        .accordion-custom { margin-bottom: 1.5rem; }
+        .accordion-custom .accordion-item { background: transparent; border: none; }
+        .accordion-custom .accordion-collapse { background: white; border-radius: 16px; margin-top: 0.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .accordion-custom .accordion-body { padding: 1.25rem; }
+        
+        .mineral-grid, .ingenieria-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+        .cursos-grid, .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        .prediseno-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        
+        .mineral-item, .curso-item, .balance-item, .prediseno-item, .ingenieria-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e9ecef;
+        }
+        .mineral-item:hover, .curso-item:hover, .balance-item:hover, .prediseno-item:hover, .ingenieria-item:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+            border-color: #f6b83d;
+        }
+        .mineral-item i, .curso-item i, .balance-item i, .prediseno-item i, .ingenieria-item i {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #0a2a36;
+        }
+        
+        @media (max-width: 992px) {
+            .mineral-grid, .ingenieria-grid { grid-template-columns: repeat(3, 1fr); }
+            .cursos-grid, .balance-grid { grid-template-columns: repeat(2, 1fr); }
+            .prediseno-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 576px) {
+            .mineral-grid, .ingenieria-grid, .cursos-grid, .balance-grid, .prediseno-grid { grid-template-columns: 1fr; }
+        }
+
+        /* BANNER DE PRECIOS CON ANIMACIÓN INTERMITENTE */
+        .price-banner {
+            background: linear-gradient(135deg, #1a4a5a, #0e3a48);
+            border-radius: 50px;
+            color: white;
+            text-align: center;
+            padding: 14px 24px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 1.25rem;
+            transition: all 0.25s;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; background: linear-gradient(135deg, #f6b83d, #e0a62e); color: #0a2a36; }
+            100% { opacity: 0.7; }
+        }
+        .price-banner:hover {
+            animation: none;
+            background: #f6b83d;
+            color: #0a2a36;
+            transform: scale(1.02);
+        }
+
+        .toast-custom { background: #1a3642; color: white; border-left: 4px solid #f6b83d; border-radius: 10px; }
+        .modal-content { border-radius: 16px; overflow: hidden; }
+        .btn-warning { background-color: #f6b83d; border-color: #f6b83d; }
+        .btn-warning:hover { background-color: #e0a62e; border-color: #e0a62e; }
+        
+        .login-modal .modal-header {
+            background: #0a2a36;
+            color: white;
+            border-bottom: 1px solid #f6b83d;
+        }
+        .login-modal .form-control:focus {
+            border-color: #f6b83d;
+            box-shadow: 0 0 0 0.2rem rgba(246,184,61,0.25);
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-navbar">
+    <div class="navbar-container">
+        <div class="navbar-left">
+            <button class="menu-toggle-btn" id="menuToggleBtn" title="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-title">
+                <span class="minera">MINERASTORE</span>
+                <span class="sub">COMER MINING</span>
+            </div>
+        </div>
+        <div class="user-info" id="userInfo" style="display: none;">
+            <i class="bi bi-person-circle"></i>
+            <div class="user-text">
+                Usuario: <span id="userNameDisplay"></span> <span id="userDniDisplay"></span>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Cerrar sesión">
+                <i class="bi bi-box-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="layout-wrapper">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-inner">
+            <nav class="nav flex-column flex-grow-1" id="sidebarNav">
+                <!-- Iniciar sesión al PRINCIPIO -->
+                <a href="#" class="nav-link-custom" id="iniciarSesionSidebar"><i class="bi bi-box-arrow-in-right"></i><span>Iniciar sesión</span></a>
+                <a href="#" class="nav-link-custom" id="editarPerfil"><i class="bi bi-person"></i><span>Editar Perfil</span></a>
+                <a href="#" class="nav-link-custom" id="misPublicaciones"><i class="bi bi-files"></i><span>Mis Publicaciones</span></a>
+                <a href="#" class="nav-link-custom" id="ubicarConcesion"><i class="bi bi-map"></i><span>Ubique la concesión minera</span></a>
+                <a href="#" class="nav-link-custom" id="appCoordenadas"><i class="bi bi-geo-alt"></i><span>App sin internet (coordenadas)</span></a>
+                <a href="#" class="nav-link-custom" id="historial"><i class="bi bi-clock-history"></i><span>Historial de Trabajo</span></a>
+                <!-- Cerrar sesión al FINAL -->
+                <a href="#" class="nav-link-custom" id="cerrarSesionSidebar" style="display: none;"><i class="bi bi-box-arrow-right"></i><span>Cerrar sesión</span></a>
+            </nav>
+            <div class="sidebar-footer"><i class="bi bi-shield-check me-1"></i> Datos seguros</div>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- MODAL DE LOGIN -->
+    <div class="modal fade login-modal" id="loginModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-badge me-2"></i>Acceso al Sistema</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"><i class="bi bi-person me-1"></i>Nombre completo</label>
+                            <input type="text" class="form-control" id="loginNombre" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"><i class="bi bi-card-text me-1"></i>DNI (8 dígitos)</label>
+                            <input type="text" class="form-control" id="loginDni" placeholder="Ej: 12345678" maxlength="8" pattern="\d{8}" required>
+                            <small class="text-muted">8 dígitos, permite ceros a la izquierda</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"><i class="bi bi-phone me-1"></i>Celular</label>
+                            <input type="tel" class="form-control" id="loginCelular" placeholder="Ej: 987654321" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 py-2 fw-bold mt-2">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+        <div class="price-banner" id="priceBanner">
+            ⚡ CLICK AQUÍ PARA VER LOS PRECIOS DE METALES ⚡
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-sm-4 col-lg-2"><div class="option-card p-3 text-center" data-bs-toggle="collapse" data-bs-target="#collapseMineralOptions" aria-expanded="false"><i class="bi bi-calculator-fill text-primary"></i><div class="fw-semibold small mt-2">VALORIZACIÓN DE MINERAL</div></div></div>
+            <div class="col-6 col-sm-4 col-lg-2"><div class="option-card p-3 text-center" id="asesorVirtualBtn"><i class="bi bi-robot text-primary"></i><div class="fw-semibold small mt-2">TU ASESOR VIRTUAL</div></div></div>
+            <div class="col-6 col-sm-4 col-lg-2"><div class="option-card p-3 text-center" data-bs-toggle="collapse" data-bs-target="#collapseCursosOptions" aria-expanded="false"><i class="bi bi-journal-bookmark-fill text-primary"></i><div class="fw-semibold small mt-2">CURSOS Y LIBROS</div></div></div>
+            <div class="col-6 col-sm-4 col-lg-2"><div class="option-card p-3 text-center" data-bs-toggle="collapse" data-bs-target="#collapseBalanceOptions" aria-expanded="false"><i class="bi bi-bar-chart-steps text-primary"></i><div class="fw-semibold small mt-2">CUADRO DE BALANCE</div></div></div>
+            <div class="col-6 col-sm-4 col-lg-2"><div class="option-card p-3 text-center" data-bs-toggle="collapse" data-bs-target="#collapsePredisenoOptions" aria-expanded="false"><i class="bi bi-building text-primary"></i><div class="fw-semibold small mt-2">PREDISEÑO DE PLANTA</div></div></div>
+            <div class="col-6 col-sm-4 col-lg-2"><div class="option-card p-3 text-center" data-bs-toggle="collapse" data-bs-target="#collapseIngenieriaOptions" aria-expanded="false"><i class="bi bi-gear-wide-connected text-primary"></i><div class="fw-semibold small mt-2">CÁLCULOS DE INGENIERÍA</div></div></div>
+        </div>
+
+        <div class="accordion" id="accordionParent">
+            <div class="accordion-custom"><div class="accordion-item"><div class="accordion-collapse collapse" id="collapseMineralOptions" data-bs-parent="#accordionParent"><div class="accordion-body"><div class="mineral-grid"><div class="mineral-item" onclick="mostrarMensaje('Oro por Lata')"><i class="bi bi-gem"></i><span>Oro por Lata</span></div><div class="mineral-item" onclick="mostrarMensaje('Relave de Oro')"><i class="bi bi-droplet"></i><span>Relave de Oro</span></div><div class="mineral-item" onclick="mostrarMensaje('Mineral de Oro')"><i class="bi bi-cpu"></i><span>Mineral de Oro</span></div><div class="mineral-item" onclick="mostrarMensaje('Mineral de Oro y Plata')"><i class="bi bi-c-circle"></i><span>Mineral de Oro y Plata</span></div><div class="mineral-item" onclick="mostrarMensaje('Mineral de Cobre, Oro y Plata (menor a 10%)')"><i class="bi bi-percent"></i><span>Mineral de Cobre, Oro y Plata (menor a 10%)</span></div><div class="mineral-item" onclick="mostrarMensaje('Concentrado de Cobre, Oro y Plata (mayor a 10%)')"><i class="bi bi-graph-up"></i><span>Concentrado de Cobre, Oro y Plata (mayor a 10%)</span></div></div></div></div></div></div>
+            <div class="accordion-custom"><div class="accordion-item"><div class="accordion-collapse collapse" id="collapseCursosOptions" data-bs-parent="#accordionParent"><div class="accordion-body"><div class="cursos-grid"><div class="curso-item" onclick="mostrarMensaje('Cursos de Metalurgia')"><i class="bi bi-mortarboard"></i><span>Cursos de Metalurgia</span></div><div class="curso-item" onclick="mostrarMensaje('Cursos de Minería')"><i class="bi bi-tools"></i><span>Cursos de Minería</span></div><div class="curso-item" onclick="mostrarMensaje('Libros de Metalurgia')"><i class="bi bi-book"></i><span>Libros de Metalurgia</span></div><div class="curso-item" onclick="mostrarMensaje('Libros de Minería')"><i class="bi bi-journal"></i><span>Libros de Minería</span></div></div></div></div></div></div>
+            <div class="accordion-custom"><div class="accordion-item"><div class="accordion-collapse collapse" id="collapseBalanceOptions" data-bs-parent="#accordionParent"><div class="accordion-body"><div class="balance-grid"><div class="balance-item" onclick="mostrarMensaje('Balance de 02 productos')"><i class="bi bi-calculator"></i><span>Balance de 02 productos</span></div><div class="balance-item" onclick="mostrarMensaje('Balance de 02 productos con valorización')"><i class="bi bi-currency-dollar"></i><span>Balance de 02 productos con valorización</span></div><div class="balance-item" onclick="mostrarMensaje('Balance de 03 productos')"><i class="bi bi-pie-chart"></i><span>Balance de 03 productos</span></div><div class="balance-item" onclick="mostrarMensaje('Balance de 04 productos')"><i class="bi bi-grid-3x3-gap-fill"></i><span>Balance de 04 productos</span></div></div></div></div></div></div>
+            <div class="accordion-custom"><div class="accordion-item"><div class="accordion-collapse collapse" id="collapsePredisenoOptions" data-bs-parent="#accordionParent"><div class="accordion-body"><div class="prediseno-grid"><div class="prediseno-item" onclick="mostrarMensaje('Modelamiento Geológico')"><i class="bi bi-diagram-3"></i><span>Modelamiento Geológico</span></div><div class="prediseno-item" onclick="mostrarMensaje('Diseño de Mina')"><i class="bi bi-gear"></i><span>Diseño de Mina</span></div><div class="prediseno-item" onclick="mostrarMensaje('Diseño Metalúrgico')"><i class="bi bi-cpu"></i><span>Diseño Metalúrgico</span></div></div></div></div></div></div>
+            <div class="accordion-custom"><div class="accordion-item"><div class="accordion-collapse collapse" id="collapseIngenieriaOptions" data-bs-parent="#accordionParent"><div class="accordion-body"><div class="ingenieria-grid"><div class="ingenieria-item" onclick="mostrarMensaje('Faja transportadora')"><i class="bi bi-conveyor-belt"></i><span>Faja</span></div><div class="ingenieria-item" onclick="mostrarMensaje('Malla rápida')"><i class="bi bi-grid-3x3"></i><span>Malla rápida</span></div><div class="ingenieria-item" onclick="mostrarMensaje('Análisis de Mallas')"><i class="bi bi-bar-chart-steps"></i><span>Análisis de Mallas</span></div><div class="ingenieria-item" onclick="mostrarMensaje('Balance de circuito directo')"><i class="bi bi-arrow-repeat"></i><span>Balance de circuito directo</span></div><div class="ingenieria-item" onclick="mostrarMensaje('Balance de circuito de dos molinos')"><i class="bi bi-fan"></i><span>Balance de circuito de dos molinos</span></div><div class="ingenieria-item" onclick="mostrarMensaje('Balance de espesador')"><i class="bi bi-droplet"></i><span>Balance de espesador</span></div></div></div></div></div></div>
+        </div>
+
+        <div class="bg-white rounded-4 p-3 p-md-4 mb-4 d-flex flex-wrap justify-content-between align-items-center shadow-sm">
+            <div class="d-flex align-items-center gap-3"><i class="bi bi-person-workspace fs-1 text-secondary"></i><div><h5 class="fw-bold mb-0">TU ASESOR</h5><p class="text-muted small mb-0">Consultoría especializada + geología y metalurgia</p></div></div>
+            <button class="btn btn-warning rounded-pill px-4 mt-2 mt-sm-0" id="asesorContactBtn"><i class="bi bi-headset me-1"></i> Contactar asesor</button>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6"><div class="bg-white rounded-4 p-3 shadow-sm h-100"><div class="d-flex gap-3"><i class="bi bi-geo-alt fs-2 text-success"></i><div><h6 class="fw-bold mb-1">Ubique la concesión minera</h6><p class="small text-muted mb-2">Coordenadas UTM, capas georreferenciadas</p><span class="badge bg-light border text-dark" style="cursor:pointer" onclick="simularUbicacion()"><i class="bi bi-crosshair"></i> Simular ubicación</span></div></div></div></div>
+            <div class="col-md-6"><div class="bg-white rounded-4 p-3 shadow-sm h-100"><div class="d-flex gap-3"><i class="bi bi-wifi-off fs-2 text-info"></i><div><h6 class="fw-bold mb-1">App sin internet</h6><p class="small text-muted mb-2">Coordenadas offline sin datos móviles</p><button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="obtenerCoordenadasOffline()"><i class="bi bi-satellite"></i> Obtener coordenadas</button></div></div></div></div>
+            <div class="col-12"><div class="bg-white rounded-4 p-3 shadow-sm d-flex flex-wrap justify-content-between align-items-center"><div><i class="bi bi-clock-history text-warning me-2"></i><strong>Historial de Trabajo</strong> — Últimos reportes: perforaciones, leyes, mantenimiento</div><button class="btn btn-sm btn-outline-secondary rounded-pill mt-2 mt-sm-0" onclick="mostrarMensaje('Historial completo')">Ver detalle <i class="bi bi-chevron-right"></i></button></div></div>
+        </div>
+
+        <footer class="text-center text-muted small mt-5 pt-3 border-top"><i class="bi bi-shield-lock-fill"></i> MINERA STORE – Tecnología aplicada a la minería</footer>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="liveToast" class="toast-custom toast" role="alert" data-bs-autohide="true" data-bs-delay="2500"><div class="d-flex"><div class="toast-body" id="toastMsg"></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>
+
+<!-- MODAL PRECIOS -->
+<div class="modal fade" id="preciosModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5 class="modal-title"><i class="bi bi-currency-dollar me-2"></i>PRECIOS DE METALES</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><ul class="list-group list-group-flush"><li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-c-circle text-warning me-2"></i>Cobre (Cu)</span><span class="fw-bold">$9,032 USD/t</span></li><li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-gem text-warning me-2"></i>Oro (Au)</span><span class="fw-bold">$2,387 USD/oz</span></li><li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-database me-2"></i>Plata (Ag)</span><span class="fw-bold">$28.14 USD/oz</span></li><li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-bar-chart me-2"></i>Zinc (Zn)</span><span class="fw-bold">$2,890 USD/t</span></li><li class="list-group-item d-flex justify-content-between"><span><i class="bi bi-box me-2"></i>Plomo (Pb)</span><span class="fw-bold">$2,110 USD/t</span></li></ul><div class="alert alert-light mt-3 small mb-0"><i class="bi bi-info-circle me-1"></i> * Precios referenciales</div></div><div class="modal-footer"><button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button></div></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let currentUser = null;
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    const userInfoDiv = document.getElementById('userInfo');
+    const userNameSpan = document.getElementById('userNameDisplay');
+    const userDniSpan = document.getElementById('userDniDisplay');
+    
+    const iniciarSesionSidebar = document.getElementById('iniciarSesionSidebar');
+    const cerrarSesionSidebar = document.getElementById('cerrarSesionSidebar');
+
+    function mostrarMensaje(texto) {
+        const toastMsg = document.getElementById('toastMsg');
+        if(toastMsg) toastMsg.innerText = texto;
+        const toastEl = document.getElementById('liveToast');
+        if(toastEl) new bootstrap.Toast(toastEl).show();
+    }
+
+    function updateSessionUI() {
+        if (currentUser) {
+            userInfoDiv.style.display = 'flex';
+            userNameSpan.textContent = currentUser.nombre;
+            userDniSpan.textContent = `[${currentUser.dni}]`;
+            iniciarSesionSidebar.style.display = 'none';
+            cerrarSesionSidebar.style.display = 'flex';
+        } else {
+            userInfoDiv.style.display = 'none';
+            iniciarSesionSidebar.style.display = 'flex';
+            cerrarSesionSidebar.style.display = 'none';
+        }
+    }
+
+    function handleLogin(nombre, dni, celular) {
+        currentUser = { nombre: nombre, dni: dni, celular: celular };
+        updateSessionUI();
+        mostrarMensaje(`✅ Bienvenido ${nombre}, has iniciado sesión correctamente.`);
+        loginModal.hide();
+    }
+
+    function handleLogout() {
+        currentUser = null;
+        updateSessionUI();
+        mostrarMensaje('🔒 Sesión cerrada correctamente.');
+    }
+
+    function requireLogin(actionName, callback) {
+        if (currentUser) {
+            if (callback) callback();
+        } else {
+            mostrarMensaje(`🔐 Debes iniciar sesión para usar "${actionName}"`);
+            loginModal.show();
+        }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('loginNombre').value.trim();
+        let dni = document.getElementById('loginDni').value.trim();
+        const celular = document.getElementById('loginCelular').value.trim();
+        
+        if (!nombre) { mostrarMensaje('❌ Ingresa el nombre completo'); return; }
+        if (!dni.match(/^\d{8}$/)) { mostrarMensaje('❌ DNI debe tener 8 dígitos numéricos'); return; }
+        if (!celular) { mostrarMensaje('❌ Ingresa el número de celular'); return; }
+        
+        handleLogin(nombre, dni, celular);
+        document.getElementById('loginForm').reset();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+    cerrarSesionSidebar.addEventListener('click', (e) => { e.preventDefault(); handleLogout(); });
+    iniciarSesionSidebar.addEventListener('click', (e) => { e.preventDefault(); loginModal.show(); });
+
+    document.getElementById('asesorVirtualBtn').addEventListener('click', () => {
+        requireLogin('Tu Asesor Virtual', () => mostrarMensaje(`🤖 Asesor virtual: Hola ${currentUser.nombre}, ¿en qué puedo ayudarte?`));
+    });
+    document.getElementById('asesorContactBtn').addEventListener('click', () => {
+        requireLogin('Contactar asesor', () => mostrarMensaje(`📞 Contactando asesor para ${currentUser.nombre} (${currentUser.celular})`));
+    });
+    document.getElementById('editarPerfil').addEventListener('click', (e) => {
+        e.preventDefault();
+        requireLogin('Editar Perfil', () => mostrarMensaje(`✏️ Editando perfil de ${currentUser.nombre} - DNI: ${currentUser.dni} - Celular: ${currentUser.celular}`));
+    });
+    document.getElementById('misPublicaciones').addEventListener('click', (e) => {
+        e.preventDefault();
+        requireLogin('Mis Publicaciones', () => mostrarMensaje(`📄 Publicaciones de ${currentUser.nombre}`));
+    });
+    document.getElementById('historial').addEventListener('click', (e) => {
+        e.preventDefault();
+        requireLogin('Historial de Trabajo', () => mostrarMensaje(`📋 Historial de trabajo de ${currentUser.nombre}`));
+    });
+    document.getElementById('ubicarConcesion').addEventListener('click', (e) => { e.preventDefault(); simularUbicacion(); });
+    document.getElementById('appCoordenadas').addEventListener('click', (e) => { e.preventDefault(); obtenerCoordenadasOffline(); });
+
+    document.getElementById('priceBanner')?.addEventListener('click', () => new bootstrap.Modal(document.getElementById('preciosModal')).show());
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    let isDesktopCollapsed = false;
+    
+    function isMobile() { return window.innerWidth < 992; }
+    function toggleDesktopSidebar() {
+        if (!isMobile()) {
+            isDesktopCollapsed = !isDesktopCollapsed;
+            sidebar.classList.toggle('collapsed', isDesktopCollapsed);
+            localStorage.setItem('sidebarCollapsed', isDesktopCollapsed);
+        }
+    }
+    function toggleMobileSidebar() {
+        if (isMobile()) {
+            sidebar.classList.toggle('mobile-open');
+            sidebarOverlay?.classList.toggle('active');
+        }
+    }
+    menuToggleBtn?.addEventListener('click', (e) => { e.stopPropagation(); isMobile() ? toggleMobileSidebar() : toggleDesktopSidebar(); });
+    sidebarOverlay?.addEventListener('click', () => { sidebar.classList.remove('mobile-open'); sidebarOverlay.classList.remove('active'); });
+    document.querySelectorAll('.sidebar .nav-link-custom').forEach(link => {
+        link.addEventListener('click', () => { if (isMobile()) { sidebar.classList.remove('mobile-open'); sidebarOverlay?.classList.remove('active'); } });
+    });
+    window.addEventListener('resize', () => {
+        if (isMobile()) { sidebar.classList.remove('collapsed', 'mobile-open'); sidebarOverlay?.classList.remove('active'); }
+        else { const saved = localStorage.getItem('sidebarCollapsed') === 'true'; sidebar.classList.toggle('collapsed', saved); isDesktopCollapsed = saved; sidebar.classList.remove('mobile-open'); sidebarOverlay?.classList.remove('active'); }
+    });
+    if (!isMobile() && localStorage.getItem('sidebarCollapsed') === 'true') { sidebar.classList.add('collapsed'); isDesktopCollapsed = true; }
+    
+    function simularUbicacion() { const lat = (-16.2 + Math.random() * 0.9).toFixed(5); const lon = (-71.2 + Math.random() * 1.2).toFixed(5); mostrarMensaje(`📍 Concesión minera: Lat ${lat}, Lon ${lon}`); }
+    function obtenerCoordenadasOffline() { if ('geolocation' in navigator) { navigator.geolocation.getCurrentPosition(pos => mostrarMensaje(`📍 GPS: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`), () => mostrarMensaje('⚠️ Offline: 12.043°S, 77.028°W')); } else { mostrarMensaje('🌐 Demo: 12.043°S, 77.028°W'); } }
+    
+    updateSessionUI();
+</script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academyc Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .pagination .page-link {
+            cursor: pointer;
+        }
+        .badge {
+            font-size: 0.9rem;
+        }
+        
+        /* Estilos para el scroll de la tabla */
+        .table-scroll-wrapper {
+            max-height: 450px;
+            overflow-y: auto;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .table-scroll-wrapper table {
+            margin-bottom: 0;
+            width: 100%;
+        }
+        
+        .table-scroll-wrapper thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 10;
+            border-bottom: 2px solid #dee2e6;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Personalizar scrollbar */
+        .table-scroll-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Mejorar visualización de la tabla */
+        .table-scroll-wrapper table tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+        
+        /* Mantener altura consistente */
+        .card-body-scroll {
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">Academyc | Gestión de Estudiantes</span>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <!-- Formulario -->
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h5 id="formTitle">Agregar Estudiante</h5>
+                <form id="academyForm">
+                    <input type="hidden" id="studentId">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Estudiante</label>
+                        <input type="text" id="nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Curso</label>
+                        <input type="text" id="curso" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nota (0-10)</label>
+                        <input type="number" id="nota" class="form-control" step="0.1" min="0" max="10" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="btnSave">Guardar Registro</button>
+                    <button type="button" class="btn btn-secondary w-100 mt-2 d-none" id="btnCancel" onclick="resetForm()">Cancelar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de Datos -->
+        <div class="col-md-8">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <h5 class="mb-0">Listado Académico</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="fetchData()">🔄 Actualizar</button>
+                    </div>
+                </div>
+                
+                <!-- Contenedor con scroll para la tabla -->
+                <div class="table-scroll-wrapper">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 150px;">Nombre</th>
+                                <th style="min-width: 120px;">Curso</th>
+                                <th style="min-width: 80px;">Nota</th>
+                                <th style="min-width: 100px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTable">
+                            <!-- Datos cargados dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Paginación -->
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+                    <div class="text-muted small" id="paginationInfo">
+                        Mostrando 0 - 0 de 0 registros
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0" id="pagination">
+                            <!-- Los botones de paginación se generarán dinámicamente -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SDK de Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // Configuración de Supabase
+    const SUPABASE_URL = 'https://gbrvnvxjoiytohfzlcpt.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdicnZudnhqb2l5dG9oZnpsY3B0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNzU5OTYsImV4cCI6MjA5Mzc1MTk5Nn0.DADimytBw2w7KB4yvjepmD-tZbCslpFWBV48DDL6nVE';
+    
+    // Inicialización de Supabase
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Variables de paginación
+    let currentPage = 1;
+    let rowsPerPage = 10;
+    let totalRecords = 0;
+    let allData = [];
+
+    const form = document.getElementById('academyForm');
+    const dataTable = document.getElementById('dataTable');
+
+    // Cargar datos al iniciar
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchAllData();
+    });
+
+    // Obtener todos los datos (para paginación en cliente)
+    async function fetchAllData() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('academyc')
+                .select('*')
+                .order('id', { ascending: false });
+
+            if (error) throw error;
+            
+            allData = data || [];
+            totalRecords = allData.length;
+            
+            // Resetear a la primera página si la página actual excede el total de páginas
+            const totalPages = Math.ceil(totalRecords / rowsPerPage);
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            } else if (totalRecords === 0) {
+                currentPage = 1;
+            }
+            
+            renderData();
+            renderPagination();
+        } catch (error) {
+            console.error('Error al cargar datos:', error);
+            alert('Error al cargar los datos: ' + error.message);
+        }
+    }
+
+    // Renderizar datos según la página actual
+    function renderData() {
+        if (!allData || allData.length === 0) {
+            dataTable.innerHTML = '<tr><td colspan="4" class="text-center">No hay registros</td></tr>';
+            document.getElementById('paginationInfo').innerHTML = `Mostrando 0 - 0 de 0 registros`;
+            return;
+        }
+        
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = Math.min(startIndex + rowsPerPage, totalRecords);
+        const pageData = allData.slice(startIndex, endIndex);
+        
+        dataTable.innerHTML = '';
+        pageData.forEach(item => {
+            const row = `
+                <tr>
+                    <td>${escapeHtml(item.nombre_estudiante)}</td>
+                    <td>${escapeHtml(item.curso)}</td>
+                    <td><span class="badge ${item.nota >= 6 ? 'bg-success' : 'bg-danger'}">${item.nota}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editRow('${item.id}', '${escapeHtml(item.nombre_estudiante)}', '${escapeHtml(item.curso)}', ${item.nota})">✏️</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteRow('${item.id}')">🗑️</button>
+                    </td>
+                </tr>
+            `;
+            dataTable.innerHTML += row;
+        });
+        
+        // Actualizar información de paginación
+        document.getElementById('paginationInfo').innerHTML = `Mostrando ${startIndex + 1} - ${endIndex} de ${totalRecords} registros`;
+        
+        // Scroll automático al inicio de la tabla cuando cambia de página
+        const scrollWrapper = document.querySelector('.table-scroll-wrapper');
+        if (scrollWrapper) {
+            scrollWrapper.scrollTop = 0;
+        }
+    }
+
+    // Renderizar controles de paginación
+    function renderPagination() {
+        const totalPages = Math.ceil(totalRecords / rowsPerPage);
+        const paginationElement = document.getElementById('pagination');
+        
+        if (totalPages <= 1) {
+            paginationElement.innerHTML = '';
+            return;
+        }
+        
+        let paginationHTML = '';
+        
+        // Botón Anterior
+        paginationHTML += `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link" onclick="changePage(${currentPage - 1})">&laquo; Anterior</a>
+            </li>
+        `;
+        
+        // Números de página (mostrar máximo 5 páginas a la vez)
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        if (startPage > 1) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" onclick="changePage(1)">1</a>
+                </li>
+                ${startPage > 2 ? '<li class="page-item disabled"><span class="page-link">...</span></li>' : ''}
+            `;
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            paginationHTML += `
+                <li class="page-item ${currentPage === i ? 'active' : ''}">
+                    <a class="page-link" onclick="changePage(${i})">${i}</a>
+                </li>
+            `;
+        }
+        
+        if (endPage < totalPages) {
+            paginationHTML += `
+                ${endPage < totalPages - 1 ? '<li class="page-item disabled"><span class="page-link">...</span></li>' : ''}
+                <li class="page-item">
+                    <a class="page-link" onclick="changePage(${totalPages})">${totalPages}</a>
+                </li>
+            `;
+        }
+        
+        // Botón Siguiente
+        paginationHTML += `
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link" onclick="changePage(${currentPage + 1})">Siguiente &raquo;</a>
+            </li>
+        `;
+        
+        paginationElement.innerHTML = paginationHTML;
+    }
+
+    // Cambiar de página
+    function changePage(page) {
+        const totalPages = Math.ceil(totalRecords / rowsPerPage);
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderData();
+        renderPagination();
+    }
+
+    // CREATE / UPDATE: Guardar o editar
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const id = document.getElementById('studentId').value;
+        const nombre_estudiante = document.getElementById('nombre').value;
+        const curso = document.getElementById('curso').value;
+        const nota = parseFloat(document.getElementById('nota').value);
+
+        try {
+            if (id) {
+                // Update
+                const { error } = await supabaseClient
+                    .from('academyc')
+                    .update({ nombre_estudiante, curso, nota })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                alert('Registro actualizado correctamente');
+            } else {
+                // Create
+                const { error } = await supabaseClient
+                    .from('academyc')
+                    .insert([{ nombre_estudiante, curso, nota }]);
+                
+                if (error) throw error;
+                alert('Registro guardado correctamente');
+            }
+
+            resetForm();
+            await fetchAllData();
+        } catch (error) {
+            console.error('Error al guardar:', error);
+            alert('Error al guardar: ' + error.message);
+        }
+    });
+
+    // DELETE: Eliminar registro
+    async function deleteRow(id) {
+        if (confirm('¿Seguro que deseas eliminar este registro?')) {
+            try {
+                const { error } = await supabaseClient
+                    .from('academyc')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                alert('Registro eliminado correctamente');
+                await fetchAllData();
+            } catch (error) {
+                console.error('Error al eliminar:', error);
+                alert('Error al eliminar: ' + error.message);
+            }
+        }
+    }
+
+    // UI: Cargar datos en el formulario para editar
+    function editRow(id, nombre, curso, nota) {
+        document.getElementById('studentId').value = id;
+        document.getElementById('nombre').value = nombre;
+        document.getElementById('curso').value = curso;
+        document.getElementById('nota').value = nota;
+        
+        document.getElementById('formTitle').innerText = 'Editar Estudiante';
+        document.getElementById('btnSave').innerText = 'Actualizar Cambios';
+        document.getElementById('btnCancel').classList.remove('d-none');
+        
+        // Scroll suave al formulario
+        document.querySelector('.col-md-4 .card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetForm() {
+        form.reset();
+        document.getElementById('studentId').value = '';
+        document.getElementById('formTitle').innerText = 'Agregar Estudiante';
+        document.getElementById('btnSave').innerText = 'Guardar Registro';
+        document.getElementById('btnCancel').classList.add('d-none');
+    }
+
+    // Función de seguridad para evitar XSS
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Función para actualizar datos (mantiene la página actual)
+    function fetchData() {
+        fetchAllData();
+    }
+
+    // Hacer funciones globales para que funcionen los onclick
+    window.fetchData = fetchData;
+    window.editRow = editRow;
+    window.deleteRow = deleteRow;
+    window.resetForm = resetForm;
+    window.changePage = changePage;
+</script>
+</body>
+</html>

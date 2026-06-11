@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios de Metales - Minera Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a2a36 0%, #1a4a5a 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 { 
+            font-size: 2rem; 
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .header p { opacity: 0.8; }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            margin-bottom: 1.5rem;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .price-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .price-item:hover { transform: translateY(-2px); background: #e9ecef; }
+        
+        .metal-info { display: flex; align-items: center; gap: 0.75rem; }
+        .metal-icon {
+            width: 45px;
+            height: 45px;
+            background: #f6b83d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .metal-name { font-weight: 600; color: #2c3e50; }
+        .metal-symbol { font-size: 0.75rem; color: #6c757d; }
+        .metal-price { font-weight: 700; font-size: 1.2rem; color: #0a2a36; }
+        .metal-unit { font-size: 0.7rem; color: #6c757d; font-weight: normal; }
+        
+        .badge-live {
+            background: #28a745;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 50px;
+            margin-left: 8px;
+            display: inline-block;
+        }
+        .badge-ref {
+            background: #e9ecef;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 50px;
+            margin-left: 8px;
+            color: #6c757d;
+            display: inline-block;
+        }
+        
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6c757d;
+            margin: 1rem 0 0.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .timestamp {
+            text-align: center;
+            color: white;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .refresh-btn {
+            background: #f6b83d;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1.5rem;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .refresh-btn:hover { background: #e0a62e; transform: scale(1.02); }
+        
+        .loader {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+        
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .info-note {
+            background: #e9ecef;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        .separator {
+            text-align: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+        .separator span {
+            background: white;
+            padding: 0 1rem;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 640px) {
+            .price-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            .metal-info {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span>📊</span> Precios de Metales
+            </h1>
+            <p>Cotizaciones actualizadas del mercado</p>
+        </div>
+        
+        <div class="card">
+            <div id="loader" class="loader">
+                <div>Cargando precios desde la API...</div>
+            </div>
+            
+            <div id="pricesContent" style="display: none;">
+                <div class="price-grid" id="priceGrid"></div>
+                <button class="refresh-btn" onclick="fetchPrices()">
+                    🔄 Actualizar precios
+                </button>
+            </div>
+        </div>
+        
+        <div class="timestamp" id="timestamp"></div>
+        <div class="info-note">
+            📌 <strong>Oro y Plata</strong>: Precios en tiempo real vía MetalpriceAPI<br>
+            📌 <strong>Cobre, Zinc, Plomo y Platino</strong>: Valores referenciales actualizados al mercado (abril 2026)<br>
+            📌 Actualización automática cada 60 segundos
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la API
+        const API_KEY = '453e8e4b76e706deb29853dcc8dde511';
+        const BASE_URL = 'https://api.metalpriceapi.com/v1/latest';
+        
+        // Precios referenciales actualizados al mercado (abril 2026)
+        // Basados en cotizaciones reales de LME y COMEX
+        const REFERENCE_PRICES = {
+            copper: { price: 4.85, unit: 'USD/Libra', symbol: 'Cu', name: 'Cobre', icon: '🔴' },
+            zinc: { price: 1.42, unit: 'USD/Libra', symbol: 'Zn', name: 'Zinc', icon: '⚪' },
+            lead: { price: 1.05, unit: 'USD/Libra', symbol: 'Pb', name: 'Plomo', icon: '⬜' },
+            platinum: { price: 995.00, unit: 'USD/Onza', symbol: 'Pt', name: 'Platino', icon: '💎' }
+        };
+        
+        // Función principal para obtener precios
+        async function fetchPrices() {
+            const loader = document.getElementById('loader');
+            const pricesContent = document.getElementById('pricesContent');
+            const priceGrid = document.getElementById('priceGrid');
+            const timestampSpan = document.getElementById('timestamp');
+            
+            // Mostrar loader
+            loader.style.display = 'block';
+            loader.innerHTML = '<div>Cargando precios en tiempo real...</div>';
+            pricesContent.style.display = 'none';
+            
+            try {
+                // Consultar SOLO Oro y Plata (lo que da el plan gratuito)
+                const url = `${BASE_URL}?api_key=${API_KEY}&base=USD&currencies=XAU,XAG`;
+                
+                console.log('Consultando:', url);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                console.log('Respuesta de la API:', data);
+                
+                if (data.success) {
+                    // Actualizar timestamp
+                    if (data.timestamp) {
+                        const date = new Date(data.timestamp * 1000);
+                        timestampSpan.innerHTML = `📅 Última actualización API: ${date.toLocaleString()}`;
+                    }
+                    
+                    const rates = data.rates;
+                    
+                    // Limpiar grid
+                    priceGrid.innerHTML = '';
+                    
+                    // ========== METALES EN TIEMPO REAL ==========
+                    // Oro
+                    if (rates.USDXAU) {
+                        priceGrid.appendChild(createLivePriceItem({
+                            name: 'Oro', 
+                            symbol: 'Au', 
+                            icon: '🥇',
+                            price: rates.USDXAU,
+                            unit: 'USD/Onza'
+                        }));
+                    }
+                    
+                    // Plata
+                    if (rates.USDXAG) {
+                        priceGrid.appendChild(createLivePriceItem({
+                            name: 'Plata', 
+                            symbol: 'Ag', 
+                            icon: '🥈',
+                            price: rates.USDXAG,
+                            unit: 'USD/Onza'
+                        }));
+                    }
+                    
+                    // ========== METALES DE REFERENCIA ==========
+                    // Cobre
+                    priceGrid.appendChild(createReferencePriceItem({
+                        name: REFERENCE_PRICES.copper.name,
+                        symbol: REFERENCE_PRICES.copper.symbol,
+                        icon: REFERENCE_PRICES.copper.icon,
+                        price: REFERENCE_PRICES.copper.price,
+                        unit: REFERENCE_PRICES.copper.unit
+                    }));
+                    
+                    // Zinc
+                    priceGrid.appendChild(createReferencePriceItem({
+                        name: REFERENCE_PRICES.zinc.name,
+                        symbol: REFERENCE_PRICES.zinc.symbol,
+                        icon: REFERENCE_PRICES.zinc.icon,
+                        price: REFERENCE_PRICES.zinc.price,
+                        unit: REFERENCE_PRICES.zinc.unit
+                    }));
+                    
+                    // Plomo
+                    priceGrid.appendChild(createReferencePriceItem({
+                        name: REFERENCE_PRICES.lead.name,
+                        symbol: REFERENCE_PRICES.lead.symbol,
+                        icon: REFERENCE_PRICES.lead.icon,
+                        price: REFERENCE_PRICES.lead.price,
+                        unit: REFERENCE_PRICES.lead.unit
+                    }));
+                    
+                    // Platino
+                    priceGrid.appendChild(createReferencePriceItem({
+                        name: REFERENCE_PRICES.platinum.name,
+                        symbol: REFERENCE_PRICES.platinum.symbol,
+                        icon: REFERENCE_PRICES.platinum.icon,
+                        price: REFERENCE_PRICES.platinum.price,
+                        unit: REFERENCE_PRICES.platinum.unit
+                    }));
+                    
+                    // Mostrar resultados
+                    loader.style.display = 'none';
+                    pricesContent.style.display = 'block';
+                    
+                } else {
+                    throw new Error(data.error?.info || 'Error al obtener datos');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loader.innerHTML = `
+                    <div class="error">
+                        ❌ Error al cargar los precios: ${error.message}<br>
+                        <small>Verifica tu conexión a internet. Mostrando valores referenciales...</small>
+                    </div>
+                `;
+                
+                // Mostrar valores referenciales aunque falle la API
+                showFallbackPrices(priceGrid, timestampSpan);
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    pricesContent.style.display = 'block';
+                }, 1500);
+            }
+        }
+        
+        // Función para mostrar valores referenciales (fallback)
+        function showFallbackPrices(priceGrid, timestampSpan) {
+            priceGrid.innerHTML = '';
+            timestampSpan.innerHTML = `📅 Usando valores referenciales (última actualización: ${new Date().toLocaleString()})`;
+            
+            // Oro referencial
+            priceGrid.appendChild(createFallbackPriceItem({
+                name: 'Oro', symbol: 'Au', icon: '🥇', price: 2915.00, unit: 'USD/Onza'
+            }));
+            
+            // Plata referencial
+            priceGrid.appendChild(createFallbackPriceItem({
+                name: 'Plata', symbol: 'Ag', icon: '🥈', price: 32.50, unit: 'USD/Onza'
+            }));
+            
+            // Cobre
+            priceGrid.appendChild(createReferencePriceItem({
+                name: REFERENCE_PRICES.copper.name,
+                symbol: REFERENCE_PRICES.copper.symbol,
+                icon: REFERENCE_PRICES.copper.icon,
+                price: REFERENCE_PRICES.copper.price,
+                unit: REFERENCE_PRICES.copper.unit
+            }));
+            
+            // Zinc
+            priceGrid.appendChild(createReferencePriceItem({
+                name: REFERENCE_PRICES.zinc.name,
+                symbol: REFERENCE_PRICES.zinc.symbol,
+                icon: REFERENCE_PRICES.zinc.icon,
+                price: REFERENCE_PRICES.zinc.price,
+                unit: REFERENCE_PRICES.zinc.unit
+            }));
+            
+            // Plomo
+            priceGrid.appendChild(createReferencePriceItem({
+                name: REFERENCE_PRICES.lead.name,
+                symbol: REFERENCE_PRICES.lead.symbol,
+                icon: REFERENCE_PRICES.lead.icon,
+                price: REFERENCE_PRICES.lead.price,
+                unit: REFERENCE_PRICES.lead.unit
+            }));
+            
+            // Platino
+            priceGrid.appendChild(createReferencePriceItem({
+                name: REFERENCE_PRICES.platinum.name,
+                symbol: REFERENCE_PRICES.platinum.symbol,
+                icon: REFERENCE_PRICES.platinum.icon,
+                price: REFERENCE_PRICES.platinum.price,
+                unit: REFERENCE_PRICES.platinum.unit
+            }));
+        }
+        
+        // Crear elemento de precio en tiempo real
+        function createLivePriceItem(metal) {
+            const div = document.createElement('div');
+            div.className = 'price-item';
+            div.innerHTML = `
+                <div class="metal-info">
+                    <div class="metal-icon">${metal.icon}</div>
+                    <div>
+                        <div class="metal-name">
+                            ${metal.name} <span class="metal-symbol">(${metal.symbol})</span>
+                            <span class="badge-live">en vivo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="metal-price">
+                    $${metal.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    <span class="metal-unit">${metal.unit}</span>
+                </div>
+            `;
+            return div;
+        }
+        
+        // Crear elemento de precio de referencia
+        function createReferencePriceItem(metal) {
+            const div = document.createElement('div');
+            div.className = 'price-item';
+            div.innerHTML = `
+                <div class="metal-info">
+                    <div class="metal-icon">${metal.icon}</div>
+                    <div>
+                        <div class="metal-name">
+                            ${metal.name} <span class="metal-symbol">(${metal.symbol})</span>
+                            <span class="badge-ref">referencial</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="metal-price">
+                    $${typeof metal.price === 'number' ? metal.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : metal.price}
+                    <span class="metal-unit">${metal.unit}</span>
+                </div>
+            `;
+            return div;
+        }
+        
+        // Crear elemento de precio de fallback
+        function createFallbackPriceItem(metal) {
+            const div = document.createElement('div');
+            div.className = 'price-item';
+            div.style.opacity = '0.9';
+            div.innerHTML = `
+                <div class="metal-info">
+                    <div class="metal-icon">${metal.icon}</div>
+                    <div>
+                        <div class="metal-name">
+                            ${metal.name} <span class="metal-symbol">(${metal.symbol})</span>
+                            <span class="badge-ref">referencial</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="metal-price">
+                    $${metal.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    <span class="metal-unit">${metal.unit}</span>
+                </div>
+            `;
+            return div;
+        }
+        
+        // Inicializar la página cargando los precios
+        fetchPrices();
+        
+        // Configurar actualización automática cada 60 segundos
+        setInterval(fetchPrices, 60000);
+    </script>
+</body>
+</html>

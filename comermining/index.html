@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minera Store | Portal de Minería</title>
+    
+    <!-- Bootstrap CSS + iconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- TOP NAVBAR -->
+<nav class="top-navbar">
+    <div class="navbar-container">
+        <div class="navbar-left">
+            <button class="menu-toggle-btn" id="menuToggleBtn" title="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-title">
+                <span class="minera">MINERASTORE</span>
+                <span class="sub">COMER MINING</span>
+            </div>
+        </div>
+        <div class="user-info" id="userInfo" style="display: none;">
+            <i class="bi bi-person-circle"></i>
+            <div class="user-text">
+                Usuario: <span id="userNameDisplay"></span> <span id="userDniDisplay"></span>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Cerrar sesión">
+                <i class="bi bi-box-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="layout-wrapper">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-inner">
+            <nav class="nav flex-column flex-grow-1">
+                <a href="#" class="nav-link-custom" id="iniciarSesionSidebar">
+                    <i class="bi bi-box-arrow-in-right"></i><span>Iniciar sesión</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="editarPerfil">
+                    <i class="bi bi-person"></i><span>Editar Perfil</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="misPublicaciones">
+                    <i class="bi bi-files"></i><span>Mis Publicaciones</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="ubicarConcesion">
+                    <i class="bi bi-map"></i><span>Ubique la concesión minera</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="appCoordenadas">
+                    <i class="bi bi-geo-alt"></i><span>App sin internet (coordenadas)</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="historial">
+                    <i class="bi bi-clock-history"></i><span>Historial de Trabajo</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="volverInicio" style="display: none;">
+                    <i class="bi bi-house"></i><span>Volver al Inicio</span>
+                </a>
+                <a href="#" class="nav-link-custom" id="cerrarSesionSidebar" style="display: none;">
+                    <i class="bi bi-box-arrow-right"></i><span>Cerrar sesión</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <i class="bi bi-shield-check me-1"></i> Datos seguros
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- MODALES (se mantienen igual) -->
+    <!-- MODAL DE LOGIN -->
+    <div class="modal fade login-modal" id="loginModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-badge me-2"></i>Acceso al Sistema</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>Nombre completo
+                            </label>
+                            <input type="text" class="form-control" id="loginNombre" 
+                                   placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-card-text me-1"></i>DNI (8 dígitos)
+                            </label>
+                            <input type="text" class="form-control" id="loginDni" 
+                                   placeholder="Ej: 12345678" maxlength="8" pattern="\d{8}" required>
+                            <small class="text-muted">8 dígitos, permite ceros a la izquierda</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-phone me-1"></i>Celular
+                            </label>
+                            <input type="tel" class="form-control" id="loginCelular" 
+                                   placeholder="Ej: 987654321" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 py-2 fw-bold mt-2">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA VENTA -->
+    <div class="modal fade sell-modal" id="sellModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sellModalTitle">
+                        <i class="bi bi-tag me-2"></i>Vender
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="sellForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-textarea-t"></i>¿Qué ofreces o buscas?
+                            </label>
+                            <textarea class="form-control" id="sellDescription" rows="4" 
+                                      placeholder="Describe tu producto, servicio o requerimiento..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-card-text"></i>DNI
+                            </label>
+                            <input type="text" class="form-control" id="sellDni" placeholder="DNI" readonly>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-building"></i>Departamento
+                                </label>
+                                <select class="form-select" id="departamentoSelect" required>
+                                    <option value="">Cargando...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-pin"></i>Provincia
+                                </label>
+                                <select class="form-select" id="provinciaSelect" required disabled>
+                                    <option value="">Primero selecciona departamento</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">
+                                    <i class="bi bi-geo-alt"></i>Distrito
+                                </label>
+                                <select class="form-select" id="distritoSelect" required disabled>
+                                    <option value="">Primero selecciona provincia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cerrar
+                            </button>
+                            <button type="submit" class="btn btn-warning">
+                                Enviar oferta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRECIOS -->
+    <div class="modal fade" id="preciosModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-currency-dollar me-2"></i>PRECIOS DE METALES
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="preciosLoader" class="text-center py-4">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Consultando precios actualizados...</p>
+                    </div>
+                    <div id="preciosContent" style="display: none;">
+                        <ul class="list-group list-group-flush" id="preciosList"></ul>
+                        <div id="timestampActualizacion" class="actualizacion-timestamp"></div>
+                    </div>
+                    <div class="alert alert-light mt-3 small mb-0">
+                        <i class="bi bi-info-circle me-1"></i> 
+                        <strong>Oro y Plata:</strong> Precios en tiempo real | 
+                        <strong>Cobre, Zinc, Plomo, Platino:</strong> Valores referenciales del mercado
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT (CONTENEDOR DINÁMICO) -->
+    <div class="main-content" id="mainContent">
+        <div class="price-banner" id="priceBanner">
+            ⚡ CLICK AQUÍ PARA VER LOS PRECIOS DE METALES ⚡
+        </div>
+
+        <!-- CONTENEDOR DINÁMICO PARA VISTAS -->
+        <div id="dynamic-content">
+            <!-- El contenido inicial se cargará aquí mediante JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- TOAST NOTIFICACIONES -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast-custom toast" role="alert" data-bs-autohide="true" data-bs-delay="2500">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMsg"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/ubigeos.js"></script>
+<script src="js/router.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

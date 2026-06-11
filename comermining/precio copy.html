@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precios de Metales - MetalpriceAPI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a2a36 0%, #1a4a5a 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.8; }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            margin-bottom: 1.5rem;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .price-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .price-item:hover { transform: translateY(-2px); background: #e9ecef; }
+        
+        .metal-info { display: flex; align-items: center; gap: 0.75rem; }
+        .metal-icon {
+            width: 40px;
+            height: 40px;
+            background: #f6b83d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .metal-name { font-weight: 600; color: #2c3e50; }
+        .metal-symbol { font-size: 0.8rem; color: #6c757d; }
+        .metal-price { font-weight: 700; font-size: 1.1rem; color: #0a2a36; }
+        .metal-unit { font-size: 0.7rem; color: #6c757d; font-weight: normal; }
+        .badge-ref {
+            background: #e9ecef;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 50px;
+            margin-left: 8px;
+            color: #6c757d;
+        }
+        
+        .timestamp {
+            text-align: center;
+            color: white;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .refresh-btn {
+            background: #f6b83d;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+        .refresh-btn:hover { background: #e0a62e; transform: scale(1.02); }
+        
+        .loader {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+        .error {
+            background: #dc3545;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .info-note {
+            background: #e9ecef;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Precios de Metales</h1>
+            <p>Datos en tiempo real vía MetalpriceAPI</p>
+        </div>
+        
+        <div class="card">
+            <div id="loader" class="loader">
+                <div>Cargando precios desde la API...</div>
+            </div>
+            
+            <div id="pricesContent" style="display: none;">
+                <div class="price-grid" id="priceGrid"></div>
+                <button class="refresh-btn" onclick="fetchPrices()">
+                    🔄 Actualizar precios
+                </button>
+            </div>
+        </div>
+        
+        <div class="timestamp" id="timestamp"></div>
+        <div class="info-note">
+            📌 Los precios de Oro (Au) y Plata (Ag) se obtienen en tiempo real.<br>
+            📌 Los precios de Cobre, Zinc, Plomo y Platino son valores de referencia del mercado.
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la API
+        const API_KEY = '453e8e4b76e706deb29853dcc8dde511';
+        const BASE_URL = 'https://api.metalpriceapi.com/v1/latest';
+        
+        // Función principal para obtener precios
+        async function fetchPrices() {
+            const loader = document.getElementById('loader');
+            const pricesContent = document.getElementById('pricesContent');
+            const priceGrid = document.getElementById('priceGrid');
+            const timestampSpan = document.getElementById('timestamp');
+            
+            // Mostrar loader
+            loader.style.display = 'block';
+            loader.innerHTML = '<div>Cargando precios...</div>';
+            pricesContent.style.display = 'none';
+            
+            try {
+                // Construir URL con los símbolos que TU API devuelve
+                const url = `${BASE_URL}?api_key=${API_KEY}&base=USD&currencies=XAU,XAG`;
+                
+                console.log('Consultando:', url);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                console.log('Respuesta de la API:', data);
+                
+                if (data.success) {
+                    // Actualizar timestamp
+                    if (data.timestamp) {
+                        const date = new Date(data.timestamp * 1000);
+                        timestampSpan.innerHTML = `📅 Última actualización: ${date.toLocaleString()}`;
+                    }
+                    
+                    const rates = data.rates;
+                    
+                    // --- Metales desde la API ---
+                    const apiMetals = [];
+                    
+                    // Oro (usando USDXAU)
+                    if (rates.USDXAU) {
+                        apiMetals.push({
+                            name: 'Oro', symbol: 'Au', icon: '🥇',
+                            price: rates.USDXAU,
+                            unit: 'USD/Onza'
+                        });
+                    }
+                    
+                    // Plata (usando USDXAG)
+                    if (rates.USDXAG) {
+                        apiMetals.push({
+                            name: 'Plata', symbol: 'Ag', icon: '🥈',
+                            price: rates.USDXAG,
+                            unit: 'USD/Onza'
+                        });
+                    }
+                    
+                    // --- Metales de referencia (valores fijos del mercado) ---
+                    const referenceMetals = [
+                        { name: 'Cobre', symbol: 'Cu', icon: '🔴', price: '4.10', unit: 'USD/Libra' },
+                        { name: 'Zinc', symbol: 'Zn', icon: '⚪', price: '1.31', unit: 'USD/Libra' },
+                        { name: 'Plomo', symbol: 'Pb', icon: '⬜', price: '0.96', unit: 'USD/Libra' },
+                        { name: 'Platino', symbol: 'Pt', icon: '💎', price: '975.00', unit: 'USD/Onza' }
+                    ];
+                    
+                    // Construir el grid de precios
+                    priceGrid.innerHTML = '';
+                    
+                    // Mostrar primero los metales de la API
+                    apiMetals.forEach(metal => {
+                        priceGrid.appendChild(createPriceItem(metal, false));
+                    });
+                    
+                    // Luego los metales de referencia
+                    referenceMetals.forEach(metal => {
+                        priceGrid.appendChild(createPriceItem(metal, true));
+                    });
+                    
+                    // Mostrar resultados
+                    loader.style.display = 'none';
+                    pricesContent.style.display = 'block';
+                    
+                } else {
+                    throw new Error(data.error?.info || 'Error al obtener datos');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loader.innerHTML = `
+                    <div class="error">
+                        ❌ Error al cargar los precios: ${error.message}<br>
+                        <small>Verifica tu conexión a internet</small>
+                    </div>
+                `;
+            }
+        }
+        
+        // Función auxiliar para crear cada elemento de precio
+        function createPriceItem(metal, isReference) {
+            const div = document.createElement('div');
+            div.className = 'price-item';
+            div.innerHTML = `
+                <div class="metal-info">
+                    <div class="metal-icon">${metal.icon}</div>
+                    <div>
+                        <div class="metal-name">
+                            ${metal.name} <span class="metal-symbol">(${metal.symbol})</span>
+                            ${isReference ? '<span class="badge-ref">referencial</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="metal-price">
+                    $${metal.price} <span class="metal-unit">${metal.unit}</span>
+                </div>
+            `;
+            return div;
+        }
+        
+        // Inicializar la página cargando los precios
+        fetchPrices();
+        
+        // Configurar actualización automática cada 60 segundos (opcional)
+        setInterval(fetchPrices, 60000);
+    </script>
+</body>
+</html>
