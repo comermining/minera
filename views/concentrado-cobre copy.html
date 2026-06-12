@@ -268,7 +268,7 @@
                         </div>
                     </div>
 
-                    <!-- PENALIDADES (valores fijos) -->
+                    <!-- PENALIDADES -->
                     <div class="mb-3">
                         <div class="fw-bold small text-muted mb-2">PENALIDADES</div>
                         <div class="row g-2 mb-1">
@@ -315,6 +315,10 @@
                         <button class="btn btn-warning btn-lg px-5 py-2 fw-bold" onclick="calcularValorizacionCompleta()">
                             <i class="bi bi-calculator me-2"></i> CALCULAR VALORIZACIÓN
                         </button>
+
+                        <button class="btn btn-success btn-lg px-5 py-2 fw-bold ms-3" onclick="generarPDF()">
+                            <i class="bi bi-file-pdf me-2"></i> GENERAR PDF
+                        </button>
                     </div>
 
                     <div id="tablaResultados">
@@ -322,7 +326,7 @@
                             <table class="table table-bordered" style="font-size: 0.85rem;">
                                 <!-- PAGOS -->
                                 <thead class="table-light">
-                                    <tr class="text-center"><th colspan="6">PAGOS</th>  </tr>
+                                    <tr class="text-center"><th colspan="6">PAGOS</th> </tr>
                                     <tr class="table-secondary">
                                         <th style="width: 25%">Concepto</th>
                                         <th style="width: 15%">Factor</th>
@@ -330,7 +334,7 @@
                                         <th style="width: 25%">Valor</th>
                                         <th style="width: 15%">Unidad</th>
                                         <th style="width: 10%">Resultado ($/TMS)</th>
-                                     </tr>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
@@ -357,13 +361,9 @@
                                         <td>$/Oz</td>
                                         <td class="text-end fw-bold text-secondary"><span id="pagoAgResultado">0.00</span></td>
                                     </tr>
-                                    <tr class="table-info">
-                                        <td colspan="5"><strong>SUBTOTAL PAGOS</strong></td>
-                                        <td class="text-end fw-bold"><span id="subtotalPagos">0.00</span></td>
-                                    </tr>
                                 </tbody>
 
-                                <!-- DEDUCCIONES (MAQUILA + REFINACIÓN) -->
+                                <!-- DEDUCCIONES -->
                                 <thead class="table-light">
                                     <tr class="text-center"><th colspan="6">DEDUCCIONES</th> </tr>
                                     <tr class="table-secondary">
@@ -373,17 +373,13 @@
                                         <th style="width: 25%">Valor</th>
                                         <th style="width: 15%">Unidad</th>
                                         <th style="width: 10%">Resultado ($/TMS)</th>
-                                     </tr>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr><td><strong>Maquila</strong></td><td class="text-end">-</td><td class="text-center"></td><td class="text-end"><span id="dedMaquilaValor">0.00</span></td><td>$/TMS</td><td class="text-end text-danger"><span id="dedMaquilaResultado">0.00</span></td></tr>
                                     <tr><td><strong>Gastos Refinación Cu</strong></td><td class="text-end"><span id="refCuFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refCuValor">0.00</span></td><td>$/TM</td><td class="text-end text-danger"><span id="refCuResultado">0.00</span></td></tr>
                                     <tr><td><strong>Gastos Refinación Au</strong></td><td class="text-end"><span id="refAuFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refAuValor">0.00</span></td><td>$/Oz</td><td class="text-end text-danger"><span id="refAuResultado">0.00</span></td></tr>
                                     <tr><td><strong>Gastos Refinación Ag</strong></td><td class="text-end"><span id="refAgFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refAgValor">0.00</span></td><td>$/Oz</td><td class="text-end text-danger"><span id="refAgResultado">0.00</span></td></tr>
-                                    <tr class="table-secondary">
-                                        <td colspan="5"><strong>SUBTOTAL DEDUCCIONES</strong></td>
-                                        <td class="text-end fw-bold text-danger"><span id="subtotalDeducciones">0.00</span></td>
-                                    </tr>
                                 </tbody>
 
                                 <!-- PENALIDADES -->
@@ -391,50 +387,28 @@
                                     <tr class="text-center"><th colspan="7">PENALIDADES</th> </tr>
                                     <tr class="table-secondary">
                                         <th style="width: 20%">Concepto</th>
-                                        <th style="width: 12%">Valor</th>
-                                        <th style="width: 8%">Libre</th>
-                                        <th style="width: 8%">Por cada</th>
-                                        <th style="width: 10%">Penalidad</th>
-                                        <th style="width: 10%">Factor</th>
+                                        <th style="width: 12%">Valor (O)</th>
+                                        <th style="width: 8%">Libre (P)</th>
+                                        <th style="width: 8%">Por cada (Q)</th>
+                                        <th style="width: 10%">Penalidad (R)</th>
+                                        <th style="width: 10%">Unidades</th>
                                         <th style="width: 12%">Resultado ($/TMS)</th>
-                                     </tr>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td><strong>As+Sb</strong></td><td class="text-end"><span id="penalidadAsSbValorMostrar">0.00</span>%</td><td class="text-end">0.3%</td><td class="text-end">0.1%</td><td class="text-end">$3.50</td><td class="text-end"><span id="penalidadAsSbFactor">0.0000</span></td><td class="text-end text-danger"><span id="penalidadAsSbResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Pb+Zn</strong></td><td class="text-end"><span id="penalidadPbZnValorMostrar">0.00</span>%</td><td class="text-end">5.0%</td><td class="text-end">0.5%</td><td class="text-end">$5.00</td><td class="text-end"><span id="penalidadPbZnFactor">0.0000</span></td><td class="text-end text-danger"><span id="penalidadPbZnResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Bi</strong></td><td class="text-end"><span id="penalidadBiValorMostrar">0.00</span>%</td><td class="text-end">0.05%</td><td class="text-end">0.01%</td><td class="text-end">$6.00</td><td class="text-end"><span id="penalidadBiFactor">0.0000</span></td><td class="text-end text-danger"><span id="penalidadBiResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Hg</strong></td><td class="text-end"><span id="penalidadHgValorMostrar">0.00</span> ppm</td><td class="text-end">20 ppm</td><td class="text-end">10 ppm</td><td class="text-end">$7.00</td><td class="text-end"><span id="penalidadHgFactor">0.0000</span></td><td class="text-end text-danger"><span id="penalidadHgResultado">0.00</span></td></tr>
+                                    <tr><td><strong>As+Sb</strong></td><td class="text-end"><span id="penalidadAsSbValorMostrar">0.00</span>%</td><td class="text-end">0.3%</td><td class="text-end">0.1%</td><td class="text-end">$3.50</td><td class="text-end"><span id="penalidadAsSbUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadAsSbResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Pb+Zn</strong></td><td class="text-end"><span id="penalidadPbZnValorMostrar">0.00</span>%</td><td class="text-end">5.0%</td><td class="text-end">0.5%</td><td class="text-end">$5.00</td><td class="text-end"><span id="penalidadPbZnUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadPbZnResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Bi</strong></td><td class="text-end"><span id="penalidadBiValorMostrar">0.00</span>%</td><td class="text-end">0.05%</td><td class="text-end">0.01%</td><td class="text-end">$6.00</td><td class="text-end"><span id="penalidadBiUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadBiResultado">0.00</span></td></tr>
+                                    <tr><td><strong>Hg</strong></td><td class="text-end"><span id="penalidadHgValorMostrar">0.00</span> ppm</td><td class="text-end">20 ppm</td><td class="text-end">10 ppm</td><td class="text-end">$7.00</td><td class="text-end"><span id="penalidadHgUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadHgResultado">0.00</span></td></tr>
                                     <tr><td><strong>Servicios (Análisis)</strong></td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end text-danger"><span id="analisisResultado">0.00</span></td></tr>
-                                    <tr class="table-secondary">
-                                        <td colspan="6"><strong>SUBTOTAL PENALIDADES</strong></td>
-                                        <td class="text-end fw-bold text-danger"><span id="subtotalPenalidades">0.00</span></td>
-                                    </tr>
                                 </tbody>
 
-                                <!-- TOTAL DEDUCCIONES GENERAL -->
-                                <thead class="table-light">
-                                    <tr class="text-center"><th colspan="6">TOTAL DEDUCCIONES GENERAL</th> </tr>
-                                </thead>
+                                <!-- RESULTADOS FINALES -->
                                 <tbody>
-                                    <tr class="table-warning">
-                                        <td colspan="5"><strong>TOTAL DEDUCCIONES Y PENALIDADES</strong></td>
-                                        <td class="text-end fw-bold text-danger"><span id="totalDeducciones">0.00</span></td>
-                                    </tr>
-                                </tbody>
-
-                                <!-- RESULTADO FINAL -->
-                                <thead class="table-light"><tr class="text-center"><th colspan="6">RESULTADO FINAL</th> </tr></thead>
-                                <tbody>
-                                    <tr class="table-success"><td colspan="5"><strong>VALOR POR TONELADA (US $/TMS)</strong></td><td class="text-end fw-bold fs-5"><span id="valorPorTMS">0.00</span></td></tr>
-                                </tbody>
-
-                                <!-- VALOR DEL LOTE -->
-                                <thead class="table-light"><tr class="text-center"><th colspan="6">VALOR DEL LOTE</th> </tr></thead>
-                                <tbody>
-                                    <tr><td colspan="3"><strong>TMS Neto</strong></td><td colspan="3"><span id="loteTMS">0.00</span> TMS</tr>
-                                    <tr class="table-success"><td colspan="3"><strong>VALOR TOTAL SIN IGV</strong></td><td colspan="3" class="fw-bold fs-5"><span id="valorTotalSinIGV">$0.00</span></tr>
-                                    <tr><td colspan="3"><strong>IGV (<span id="igvPorcentaje">18</span>%)</strong></td><td colspan="3"><span id="valorIGV">$0.00</span></tr>
-                                    <tr class="table-primary"><td colspan="3"><strong class="fs-4">VALOR TOTAL CON IGV</strong></td><td colspan="3"><strong class="fs-4 text-primary"><span id="valorTotalConIGV">$0.00</span></strong></tr>
+                                    <tr class="table-warning"><td colspan="6"><strong>TOTAL DE DEDUCCIONES</strong></td><td class="text-end fw-bold text-danger fs-5"><span id="totalDeducciones">0.00</span></td></tr>
+                                    <tr class="table-success"><td colspan="6"><strong>TOTAL /TM (US $/TMS)</strong></td><td class="text-end fw-bold fs-5"><span id="valorPorTMS">0.00</span></td></tr>
+                                    <tr><td colspan="3"><strong>IGV %</strong></td><td colspan="4"><span id="igvPorcentaje">18</span>%</td></tr>
+                                    <tr class="table-primary"><td colspan="6"><strong class="fs-4">TOTAL POR LOTE (US $)</strong></td><td class="text-end"><strong class="fs-3 text-primary"><span id="valorTotalConIGV">$0.00</span></strong></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -445,248 +419,7 @@
     </div>
 </div>
 
-<script>
-// Términos comerciales fijos
-const gastosRefCu = 0.12;
-const proteccionCu = 0.05;
-const gastosRefAg = 5.00;
-const gastosRefAu = 12.00;
-const maquila = 115.00;
-const deduccionCu = 1.25;
-const proteccionCuGeneral = 0.03;
-const deduccionAuOzTC = 0.08;
-const pagableAu = 90;
-const deduccionAgOzTC = 2.5;
-const pagableAg = 90;
-const pagableCu = 100;
-
-// Constantes
-const LB_POR_TM = 2204.62;
-const TC_A_TM_FACTOR = 1.1023;
-const OZ_POR_G = 31.1035;
-
-// Fórmula exacta de penalidad según Excel: =IF(valor<=libre,0,ROUND((valor-libre)/porCada*penalidad,2))
-function calcularPenalidad(valor, libre, porCada, penalidad) {
-    if (valor <= libre) return 0;
-    const resultado = (valor - libre) / porCada * penalidad;
-    return Math.round(resultado * 100) / 100;
-}
-
-function actualizarTMSNeto() {
-    const tmh = parseFloat(document.getElementById('tmh').value) || 0;
-    const humedad = parseFloat(document.getElementById('humedad').value) || 0;
-    const merma = parseFloat(document.getElementById('merma').value) || 0;
-    const tms = tmh * (1 - humedad / 100);
-    const tmsNeto = tms * (1 - merma / 100);
-    document.getElementById('tmsNetoPreview').value = tmsNeto.toFixed(2);
-    return tmsNeto;
-}
-
-function mostrarMensaje(texto) {
-    const toastMsg = document.getElementById('toastMsg');
-    if (toastMsg) toastMsg.innerText = texto;
-    const toastEl = document.getElementById('liveToast');
-    if (toastEl) new bootstrap.Toast(toastEl).show();
-}
-
-function calcularValorizacionCompleta() {
-    const nombreCliente = document.getElementById('nombreCliente').value || 'Anónimo';
-    
-    // ========== LEYES ==========
-    const leyCu = parseFloat(document.getElementById('leyCu').value) || 0;
-    const leyAuOzTC = parseFloat(document.getElementById('leyAu').value) || 0;
-    const leyAgOzTC = parseFloat(document.getElementById('leyAg').value) || 0;
-    
-    // ========== COTIZACIONES ==========
-    const precioCuLb = parseFloat(document.getElementById('precioCu').value) || 0;
-    const precioAuOz = parseFloat(document.getElementById('precioAu').value) || 0;
-    const precioAgOz = parseFloat(document.getElementById('precioAg').value) || 0;
-    
-    // ========== PARÁMETROS FÍSICOS ==========
-    const tmh = parseFloat(document.getElementById('tmh').value) || 0;
-    const humedad = parseFloat(document.getElementById('humedad').value) || 0;
-    const merma = parseFloat(document.getElementById('merma').value) || 0;
-    const igv = parseFloat(document.getElementById('igv').value) || 18;
-    const analisisQuimico = parseFloat(document.getElementById('analisisQuimico').value) || 0;
-    
-    // ========== CONTAMINANTES ==========
-    const as = parseFloat(document.getElementById('contAs').value) || 0;
-    const sb = parseFloat(document.getElementById('contSb').value) || 0;
-    const bi = parseFloat(document.getElementById('contBi').value) || 0;
-    const zn = parseFloat(document.getElementById('contZn').value) || 0;
-    const pb = parseFloat(document.getElementById('contPb').value) || 0;
-    const hg = parseFloat(document.getElementById('contHg').value) || 0;
-    
-    const asSb = as + sb;
-    const pbZn = pb + zn;
-    
-    document.getElementById('igvPorcentaje').innerText = igv;
-    
-    // ========== PAGOS ==========
-    // COBRE
-    const factorCu = (leyCu - deduccionCu);                                    // 26.75
-    const precioCuNeto = (precioCuLb - proteccionCuGeneral);                  // 2.70515
-    const precioCuTm = precioCuNeto / 0.000453592;                             // 5,964.00
-    const pagoCuResultado = (factorCu * precioCuTm) / 100;                     // 1,595.37
-    
-    // ORO
-    const leyAuOzTM = leyAuOzTC * TC_A_TM_FACTOR;                              // 2.2145
-    const deduccionAuOzTM = deduccionAuOzTC / OZ_POR_G;                        // 0.00257
-    const leyAuPagableBase = (leyAuOzTM - deduccionAuOzTM);                    // 2.21193
-    const pagoAuFactor = leyAuPagableBase * (pagableAu / 100);                 // 1.99074
-    const pagoAuResultado = pagoAuFactor * precioAuOz;                         // 3,782.41
-    
-    // PLATA
-    const leyAgOzTM = leyAgOzTC * TC_A_TM_FACTOR;                              // 63.944
-    const leyAgPagableBase = (leyAgOzTM - deduccionAgOzTC);                    // 61.444
-    const pagoAgFactor = leyAgPagableBase * (pagableAg / 100);                 // 55.30
-    const pagoAgResultado = pagoAgFactor * precioAgOz;                         // 1,493.10
-    
-    const subtotalPagos = pagoCuResultado + pagoAuResultado + pagoAgResultado;
-    
-    // Actualizar tabla de pagos
-    document.getElementById('pagoCuFactor').innerHTML = (factorCu / 100).toFixed(6);
-    document.getElementById('pagoCuValor').innerHTML = precioCuTm.toLocaleString('en-US', {minimumFractionDigits: 2});
-    document.getElementById('pagoCuResultado').innerHTML = pagoCuResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('pagoAuFactor').innerHTML = pagoAuFactor.toFixed(6);
-    document.getElementById('pagoAuValor').innerHTML = precioAuOz.toFixed(2);
-    document.getElementById('pagoAuResultado').innerHTML = pagoAuResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('pagoAgFactor').innerHTML = pagoAgFactor.toFixed(6);
-    document.getElementById('pagoAgValor').innerHTML = precioAgOz.toFixed(2);
-    document.getElementById('pagoAgResultado').innerHTML = pagoAgResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('subtotalPagos').innerHTML = subtotalPagos.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    // ========== DEDUCCIONES ==========
-    // Maquila
-    const dedMaquilaResultado = maquila;
-    
-    // Gastos Refinación Cu
-    const refCuFactor = factorCu / 100;  // 0.2675
-    const refCuValor = 264.5549;
-    const refCuResultado = refCuFactor * refCuValor;  // 70.77
-    
-    // Gastos Refinación Au
-    const refAuFactor = pagoAuFactor;    // 1.990754
-    const refAuValor = gastosRefAu;      // 12.00
-    const refAuResultado = refAuFactor * refAuValor;  // 23.89
-    
-    // Gastos Refinación Ag
-    const refAgFactor = pagoAgFactor;    // 55.299981
-    const refAgValor = gastosRefAg;      // 5.00
-    const refAgResultado = refAgFactor * refAgValor;  // 276.50
-    
-    const subtotalDeducciones = dedMaquilaResultado + refCuResultado + refAuResultado + refAgResultado;
-    
-    // Actualizar tabla de deducciones
-    document.getElementById('dedMaquilaValor').innerHTML = dedMaquilaResultado.toFixed(2);
-    document.getElementById('dedMaquilaResultado').innerHTML = dedMaquilaResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('refCuFactor').innerHTML = refCuFactor.toFixed(6);
-    document.getElementById('refCuValor').innerHTML = refCuValor.toLocaleString('en-US', {minimumFractionDigits: 2});
-    document.getElementById('refCuResultado').innerHTML = refCuResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('refAuFactor').innerHTML = refAuFactor.toFixed(6);
-    document.getElementById('refAuValor').innerHTML = refAuValor.toFixed(2);
-    document.getElementById('refAuResultado').innerHTML = refAuResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('refAgFactor').innerHTML = refAgFactor.toFixed(6);
-    document.getElementById('refAgValor').innerHTML = refAgValor.toFixed(2);
-    document.getElementById('refAgResultado').innerHTML = refAgResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('subtotalDeducciones').innerHTML = subtotalDeducciones.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    // ========== PENALIDADES (con fórmula correcta) ==========
-    // As+Sb: Libre 0.3%, Por cada 0.1%, Penalidad $3.50
-    const penalidadAsSb = calcularPenalidad(asSb, 0.3, 0.1, 3.5);
-    const penalidadAsSbFactor = penalidadAsSb > 0 ? (asSb - 0.3) / 0.1 * 3.5 : 0;
-    
-    // Pb+Zn: Libre 5%, Por cada 0.5%, Penalidad $5.00
-    const penalidadPbZn = calcularPenalidad(pbZn, 5.0, 0.5, 5.0);
-    const penalidadPbZnFactor = penalidadPbZn > 0 ? (pbZn - 5.0) / 0.5 * 5.0 : 0;
-    
-    // Bi: Libre 0.05%, Por cada 0.01%, Penalidad $6.00
-    const penalidadBi = calcularPenalidad(bi, 0.05, 0.01, 6.0);
-    const penalidadBiFactor = penalidadBi > 0 ? (bi - 0.05) / 0.01 * 6.0 : 0;
-    
-    // Hg: Libre 20 ppm, Por cada 10 ppm, Penalidad $7.00
-    const penalidadHg = calcularPenalidad(hg, 20, 10, 7.0);
-    const penalidadHgFactor = penalidadHg > 0 ? (hg - 20) / 10 * 7.0 : 0;
-    
-    const analisisResultado = analisisQuimico;
-    
-    const subtotalPenalidades = penalidadAsSb + penalidadPbZn + penalidadBi + penalidadHg + analisisResultado;
-    
-    // Actualizar tabla de penalidades
-    document.getElementById('penalidadAsSbValorMostrar').innerHTML = asSb.toFixed(3);
-    document.getElementById('penalidadAsSbFactor').innerHTML = penalidadAsSbFactor.toFixed(4);
-    document.getElementById('penalidadAsSbResultado').innerHTML = penalidadAsSb.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('penalidadPbZnValorMostrar').innerHTML = pbZn.toFixed(3);
-    document.getElementById('penalidadPbZnFactor').innerHTML = penalidadPbZnFactor.toFixed(4);
-    document.getElementById('penalidadPbZnResultado').innerHTML = penalidadPbZn.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('penalidadBiValorMostrar').innerHTML = bi.toFixed(3);
-    document.getElementById('penalidadBiFactor').innerHTML = penalidadBiFactor.toFixed(4);
-    document.getElementById('penalidadBiResultado').innerHTML = penalidadBi.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('penalidadHgValorMostrar').innerHTML = hg.toFixed(3);
-    document.getElementById('penalidadHgFactor').innerHTML = penalidadHgFactor.toFixed(4);
-    document.getElementById('penalidadHgResultado').innerHTML = penalidadHg.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('analisisResultado').innerHTML = analisisResultado.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    document.getElementById('subtotalPenalidades').innerHTML = subtotalPenalidades.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    // ========== TOTAL DEDUCCIONES GENERAL ==========
-    const totalDeducciones = subtotalDeducciones + subtotalPenalidades;
-    document.getElementById('totalDeducciones').innerHTML = totalDeducciones.toLocaleString('en-US', {minimumFractionDigits: 2});
-    
-    // ========== VALOR POR TMS ==========
-    const valorPorTMS = subtotalPagos - totalDeducciones;
-    
-    // ========== VALOR DEL LOTE ==========
-    const tms = tmh * (1 - humedad / 100);
-    const tmsNeto = tms * (1 - merma / 100);
-    
-    const valorTotalSinIGV = valorPorTMS * tmsNeto;
-    const valorIGV = valorTotalSinIGV * (igv / 100);
-    const valorTotalConIGV = valorTotalSinIGV + valorIGV;
-    
-    // Actualizar resultados finales
-    document.getElementById('valorPorTMS').innerHTML = valorPorTMS.toLocaleString('en-US', {minimumFractionDigits: 2});
-    document.getElementById('loteTMS').innerHTML = tmsNeto.toFixed(2);
-    document.getElementById('valorTotalSinIGV').innerHTML = `$${valorTotalSinIGV.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('valorIGV').innerHTML = `$${valorIGV.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('valorTotalConIGV').innerHTML = `$${valorTotalConIGV.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    
-    mostrarMensaje(`✅ Valorización calculada para ${nombreCliente}: $${valorTotalConIGV.toLocaleString()} USD`);
-}
-
-// Event listeners
-document.getElementById('tmh')?.addEventListener('input', () => {
-    actualizarTMSNeto();
-    calcularValorizacionCompleta();
-});
-document.getElementById('humedad')?.addEventListener('input', () => {
-    actualizarTMSNeto();
-    calcularValorizacionCompleta();
-});
-document.getElementById('merma')?.addEventListener('input', () => {
-    actualizarTMSNeto();
-    calcularValorizacionCompleta();
-});
-
-const camposEditable = ['leyCu', 'leyAu', 'leyAg', 'precioCu', 'precioAu', 'precioAg', 
-    'contAs', 'contSb', 'contBi', 'contZn', 'contPb', 'contHg', 'igv', 'analisisQuimico'];
-camposEditable.forEach(id => {
-    document.getElementById(id)?.addEventListener('input', calcularValorizacionCompleta);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    actualizarTMSNeto();
-    calcularValorizacionCompleta();
-});
-</script>
+<!-- Librería html2pdf para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- Script principal -->
+<script src="js/views/concentrado-cobre.js"></script>
