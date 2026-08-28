@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de PDF con html2pdf.js</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 600px;
+    }
+    h1 {
+      color: #0056b3;
+      margin-top: 0;
+    }
+    .btn {
+      background: #0056b3;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 1rem;
+    }
+    .btn:hover {
+      background: #003f8a;
+    }
+    .info {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #555;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+    }
+    .info code {
+      background: #f1f1f1;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📄 Generador de PDF</h1>
+    <p>Haz clic en el botón para generar y descargar un PDF de ejemplo con <strong>html2pdf.js</strong>.</p>
+    <button class="btn" onclick="generarPDFDesdeHTML()">📥 Generar PDF</button>
+    <div class="info">
+      <p>El PDF se generará a partir de una plantilla HTML en memoria.<br>
+      La librería se carga desde CDN: <code>html2pdf.js</code>.</p>
+    </div>
+  </div>
+
+  <!-- 1. Cargar html2pdf desde CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- 2. El script que genera el PDF (idéntico al proporcionado) -->
+  <script>
+    function generarPDFDesdeHTML() {
+      // 1. Tu plantilla HTML/CSS en string
+      const htmlString = `
+        <div style="padding: 20px; font-family: Arial, sans-serif; color: #333;">
+          <h1 style="color: #0056b3;">Factura de Compra</h1>
+          <hr />
+          <p><strong>Cliente:</strong> Juan Pérez</p>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+              <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Concepto</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">Servicio Web</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">$500.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      // 2. Crear un elemento HTML temporal en memoria (fuera de la vista)
+      const element = document.createElement('div');
+      element.innerHTML = htmlString;
+
+      // 3. Configuración del PDF
+      const opt = {
+        margin:       10,
+        filename:     'factura.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 }, // Mayor resolución
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // 4. Generar y descargar el PDF
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
+</body>
+</html>

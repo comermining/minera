@@ -1,0 +1,230 @@
+<!-- VISTA: CONCENTRADO DE ZINC - VALORIZACIÓN -->
+<div class="concentrado-view">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <button class="btn-back" onclick="window.loadDefaultView && loadDefaultView()">
+                <i class="bi bi-arrow-left"></i> Volver al inicio
+            </button>
+        </div>
+        <h2 class="fw-bold" style="color: #0a2a36;">
+            <i class="bi bi-cpu text-warning"></i> Valorización de Concentrado de Zinc
+        </h2>
+    </div>
+
+    <div class="row">
+        <!-- COLUMNA IZQUIERDA: Datos Editables -->
+        <div class="col-lg-7 mb-4">
+            <!-- PARA QUIÉN VA DIRIGIDO -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold"><i class="bi bi-building text-warning"></i> PARA QUIÉN VA DIRIGIDO EL CÁLCULO</h5>
+                </div>
+                <div class="card-body">
+                    <input type="text" id="nombreCliente" class="form-control" placeholder="Nombre" value="Cliente Ejemplo">
+                </div>
+            </div>
+
+            <!-- DATOS DEL MINERAL -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold"><i class="bi bi-calculator-fill text-warning"></i> DATOS DEL MINERAL</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Toneladas Métricas Húmedas</label></div>
+                        <div class="col-4"><input type="number" id="tmh" class="form-control" step="0.01" value="200"></div>
+                        <div class="col-3"><span class="form-text text-muted">TMH</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Humedad</label></div>
+                        <div class="col-4"><input type="number" id="humedad" class="form-control" step="0.01" value="7"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Merma</label></div>
+                        <div class="col-4"><input type="number" id="merma" class="form-control" step="0.001" value="0.75"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">IGV</label></div>
+                        <div class="col-4"><input type="number" id="igv" class="form-control" step="0.5" value="18"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small">TMS Neto</label></div>
+                        <div class="col-4"><input type="text" id="tmsNetoPreview" class="form-control bg-light" readonly></div>
+                        <div class="col-3"><span class="form-text text-muted">TMS</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEYES -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold"><i class="bi bi-flask text-warning"></i> LEYES</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">ZINC Zn</label></div>
+                        <div class="col-4"><input type="number" id="leyZn" class="form-control" step="0.001" value="48"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small">PLATA Ag</label></div>
+                        <div class="col-4"><input type="number" id="leyAg" class="form-control" step="0.001" value="48"></div>
+                        <div class="col-3"><span class="form-text text-muted">Oz/TC</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTAMINANTES -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold"><i class="bi bi-exclamation-triangle text-warning"></i> CONTAMINANTES</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">ARSENICO As</label></div>
+                        <div class="col-4"><input type="number" id="contAs" class="form-control" step="0.001" value="0.24"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">ANTIMONIO Sb</label></div>
+                        <div class="col-4"><input type="number" id="contSb" class="form-control" step="0.001" value="1.5"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">FIERRO Fe</label></div>
+                        <div class="col-4"><input type="number" id="contFe" class="form-control" step="0.001" value="5"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">SILICE SiO2</label></div>
+                        <div class="col-4"><input type="number" id="contSio2" class="form-control" step="0.001" value="2"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label small">MANGANESO Mn</label></div>
+                        <div class="col-4"><input type="number" id="contMn" class="form-control" step="0.001" value="0.3"></div>
+                        <div class="col-3"><span class="form-text text-muted">%</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label small">MERCURIO Hg</label></div>
+                        <div class="col-4"><input type="number" id="contHg" class="form-control" step="0.001" value="15"></div>
+                        <div class="col-3"><span class="form-text text-muted">ppm</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COTIZACIONES -->
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold"><i class="bi bi-currency-dollar text-warning"></i> COTIZACIONES</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 align-items-center mb-2">
+                        <div class="col-5"><label class="form-label fw-semibold small">Zinc Zn</label></div>
+                        <div class="col-4"><input type="number" id="precioZn" class="form-control" step="0.001" value="1.3583"></div>
+                        <div class="col-3"><span class="form-text text-muted">$/lb</span></div>
+                    </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-5"><label class="form-label fw-semibold small">Plata Ag</label></div>
+                        <div class="col-4"><input type="number" id="precioAg" class="form-control" step="0.1" value="24.62"></div>
+                        <div class="col-3"><span class="form-text text-muted">$/Oz</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Términos Comerciales -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-transparent border-0 pt-3">
+                    <h5 class="card-title fw-bold"><i class="bi bi-file-text-fill text-secondary"></i> Términos Comerciales</h5>
+                    <small class="text-muted">Los términos no son editables</small>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="accordionTerminos">
+                        <!-- ZINC -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseZn"><strong>ZINC (Zn)</strong></button></h2>
+                            <div id="collapseZn" class="accordion-collapse collapse" data-bs-parent="#accordionTerminos">
+                                <div class="accordion-body">
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">% Pagable Zn</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="85"></div><div class="col-3"><span class="form-text small">%</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">Deducción Zn</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="8"></div><div class="col-3"><span class="form-text small">%</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- PLATA -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAg"><strong>PLATA (Ag)</strong></button></h2>
+                            <div id="collapseAg" class="accordion-collapse collapse" data-bs-parent="#accordionTerminos">
+                                <div class="accordion-body">
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">% Pagable Ag</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="65"></div><div class="col-3"><span class="form-text small">%</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">Deducción Ag</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="3.5"></div><div class="col-3"><span class="form-text small">Oz/TC</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ESCALADOR -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEsc"><strong>ESCALADOR</strong></button></h2>
+                            <div id="collapseEsc" class="accordion-collapse collapse" data-bs-parent="#accordionTerminos">
+                                <div class="accordion-body">
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">Constante (a)</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="-1950"></div><div class="col-3"><span class="form-text small">$</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">Factor (b)</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="0.18"></div><div class="col-3"><span class="form-text small">%</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- PENALIDADES -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePen"><strong>PENALIDADES</strong></button></h2>
+                            <div id="collapsePen" class="accordion-collapse collapse" data-bs-parent="#accordionTerminos">
+                                <div class="accordion-body">
+                                    <div class="row g-2 mb-1"><div class="col-6"><label class="form-label small">As+Sb (Libre 0.3%)</label></div><div class="col-3"><input type="text" class="form-control form-control-sm text-end" readonly value="3.5"></div><div class="col-3"><span class="form-text small">$/0.1%</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-6"><label class="form-label small">Fe (Libre 5%)</label></div><div class="col-3"><input type="text" class="form-control form-control-sm text-end" readonly value="3.5"></div><div class="col-3"><span class="form-text small">$/1%</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-6"><label class="form-label small">SiO2 (Libre 2%)</label></div><div class="col-3"><input type="text" class="form-control form-control-sm text-end" readonly value="2.5"></div><div class="col-3"><span class="form-text small">$/1%</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-6"><label class="form-label small">Mn (Libre 0.3%)</label></div><div class="col-3"><input type="text" class="form-control form-control-sm text-end" readonly value="2.5"></div><div class="col-3"><span class="form-text small">$/0.1%</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-6"><label class="form-label small">Hg (Libre 20 ppm)</label></div><div class="col-3"><input type="text" class="form-control form-control-sm text-end" readonly value="10"></div><div class="col-3"><span class="form-text small">$/30 ppm</span></div></div>
+                                    <div class="row g-2 mb-1"><div class="col-6"><label class="form-label small">H2O (Libre 10%)</label></div><div class="col-3"><input type="text" class="form-control form-control-sm text-end" readonly value="3"></div><div class="col-3"><span class="form-text small">$/1%</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- MAQUILA -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMaq"><strong>MAQUILA</strong></button></h2>
+                            <div id="collapseMaq" class="accordion-collapse collapse" data-bs-parent="#accordionTerminos">
+                                <div class="accordion-body">
+                                    <div class="row g-2 mb-1"><div class="col-5"><label class="form-label small">Maquila</label></div><div class="col-4"><input type="text" class="form-control form-control-sm text-end" readonly value="395"></div><div class="col-3"><span class="form-text small">$</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE VALORIZACIÓN -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header" style="background: linear-gradient(135deg, #0a2a36, #1a4a5a); color: white;">
+                    <h5 class="card-title fw-bold mb-0"><i class="bi bi-calculator-fill me-2"></i> VALORIZACIÓN DE CONCENTRADO DE ZINC</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <button class="btn btn-success btn-lg px-5 py-2 fw-bold ms-3" onclick="generarPDF()">
+                            <i class="bi bi-file-pdf me-2"></i> GENERAR PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Librerías para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Script principal -->
+<script src="js/views/concentrado-zinc.js"></script>

@@ -1,14 +1,11 @@
 // ===== ARCHIVO PRINCIPAL =====
 
 // Configuración de la API de precios
-// const PRECIOS_API_KEY = '453e8e4b76e706deb29853dcc8dde511';
-const PRECIOS_API_KEY = 'd6e89ca362a244d6e4518ea310bb8479';
+const PRECIOS_API_KEY = '453e8e4b76e706deb29853dcc8dde511';
 const PRECIOS_BASE_URL = 'https://api.metalpriceapi.com/v1/latest';
 
 // Precios referenciales
 const PRECIOS_REFERENCIA = {
-    oro: { precio: 2915.00, unidad: 'USD/Onza', simbolo: 'Au', icono: 'bi bi-gem' },
-    plata: { precio: 32.50, unidad: 'USD/Onza', simbolo: 'Ag', icono: 'bi bi-database' },
     cobre: { precio: 4.85, unidad: 'USD/Libra', simbolo: 'Cu', icono: 'bi bi-c-circle' },
     zinc: { precio: 1.42, unidad: 'USD/Libra', simbolo: 'Zn', icono: 'bi bi-bar-chart' },
     plomo: { precio: 1.05, unidad: 'USD/Libra', simbolo: 'Pb', icono: 'bi bi-box' },
@@ -28,8 +25,7 @@ async function fetchMetalPrices() {
     content.style.display = 'none';
     
     try {
-        // const url = `${PRECIOS_BASE_URL}?api_key=${PRECIOS_API_KEY}&base=USD&currencies=XAU,XAG`;
-        const url = `${PRECIOS_BASE_URL}?api_key=${PRECIOS_API_KEY}&base=USD&currencies=XAU,XAG,XPT,XCU,XZN,XPB`;
+        const url = `${PRECIOS_BASE_URL}?api_key=${PRECIOS_API_KEY}&base=USD&currencies=XAU,XAG`;
         const response = await fetch(url);
         const data = await response.json();
         
@@ -42,29 +38,16 @@ async function fetchMetalPrices() {
             const rates = data.rates;
             lista.innerHTML = '';
             
-            // Oro
-            const oroPrice = rates.XAU || PRECIOS_REFERENCIA.oro.precio;
-            lista.innerHTML += crearItemPrecio('Oro', PRECIOS_REFERENCIA.oro.simbolo, oroPrice, PRECIOS_REFERENCIA.oro.unidad, PRECIOS_REFERENCIA.oro.icono, !!rates.XAU);
-
-            // Plata
-            const plataPrice = rates.XAG || PRECIOS_REFERENCIA.plata.precio;
-            lista.innerHTML += crearItemPrecio('Plata', PRECIOS_REFERENCIA.plata.simbolo, plataPrice, PRECIOS_REFERENCIA.plata.unidad, PRECIOS_REFERENCIA.plata.icono, !!rates.XAG);
-
-            // Cobre
-            const cobrePrice = rates.XCU || PRECIOS_REFERENCIA.cobre.precio;
-            lista.innerHTML += crearItemPrecio('Cobre', PRECIOS_REFERENCIA.cobre.simbolo, cobrePrice, PRECIOS_REFERENCIA.cobre.unidad, PRECIOS_REFERENCIA.cobre.icono, !!rates.XCU);
-
-            // Zinc
-            const zincPrice = rates.XZN || PRECIOS_REFERENCIA.zinc.precio;
-            lista.innerHTML += crearItemPrecio('Zinc', PRECIOS_REFERENCIA.zinc.simbolo, zincPrice, PRECIOS_REFERENCIA.zinc.unidad, PRECIOS_REFERENCIA.zinc.icono, !!rates.XZN);
-
-            // Plomo
-            const plomoPrice = rates.XPB || PRECIOS_REFERENCIA.plomo.precio;
-            lista.innerHTML += crearItemPrecio('Plomo', PRECIOS_REFERENCIA.plomo.simbolo, plomoPrice, PRECIOS_REFERENCIA.plomo.unidad, PRECIOS_REFERENCIA.plomo.icono, !!rates.XPB);
-
-            // Platino
-            const platinoPrice = rates.XPT || PRECIOS_REFERENCIA.platino.precio;
-            lista.innerHTML += crearItemPrecio('Platino', PRECIOS_REFERENCIA.platino.simbolo, platinoPrice, PRECIOS_REFERENCIA.platino.unidad, PRECIOS_REFERENCIA.platino.icono, !!rates.XPT);            
+            const oroPrice = rates.USDXAU || 2915.00;
+            lista.innerHTML += crearItemPrecio('Oro', 'Au', oroPrice, 'USD/Onza', 'bi bi-gem', true);
+            
+            const plataPrice = rates.USDXAG || 32.50;
+            lista.innerHTML += crearItemPrecio('Plata', 'Ag', plataPrice, 'USD/Onza', 'bi bi-database', true);
+            
+            lista.innerHTML += crearItemPrecio('Cobre', PRECIOS_REFERENCIA.cobre.simbolo, PRECIOS_REFERENCIA.cobre.precio, PRECIOS_REFERENCIA.cobre.unidad, PRECIOS_REFERENCIA.cobre.icono, false);
+            lista.innerHTML += crearItemPrecio('Zinc', PRECIOS_REFERENCIA.zinc.simbolo, PRECIOS_REFERENCIA.zinc.precio, PRECIOS_REFERENCIA.zinc.unidad, PRECIOS_REFERENCIA.zinc.icono, false);
+            lista.innerHTML += crearItemPrecio('Plomo', PRECIOS_REFERENCIA.plomo.simbolo, PRECIOS_REFERENCIA.plomo.precio, PRECIOS_REFERENCIA.plomo.unidad, PRECIOS_REFERENCIA.plomo.icono, false);
+            lista.innerHTML += crearItemPrecio('Platino', PRECIOS_REFERENCIA.platino.simbolo, PRECIOS_REFERENCIA.platino.precio, PRECIOS_REFERENCIA.platino.unidad, PRECIOS_REFERENCIA.platino.icono, false);
             
             loader.style.display = 'none';
             content.style.display = 'block';
@@ -99,8 +82,8 @@ function mostrarPreciosReferenciales(lista, timestampSpan) {
     timestampSpan.innerHTML = `📅 Usando valores referenciales (${new Date().toLocaleString()})`;
     lista.innerHTML = '';
     
-    lista.innerHTML += crearItemPrecio('Oro', PRECIOS_REFERENCIA.oro.simbolo, PRECIOS_REFERENCIA.oro.precio, PRECIOS_REFERENCIA.oro.unidad, PRECIOS_REFERENCIA.oro.icono, false);
-    lista.innerHTML += crearItemPrecio('Plata', PRECIOS_REFERENCIA.plata.simbolo, PRECIOS_REFERENCIA.plata.precio, PRECIOS_REFERENCIA.plata.unidad, PRECIOS_REFERENCIA.plata.icono, false);
+    lista.innerHTML += crearItemPrecio('Oro', 'Au', 2915.00, 'USD/Onza', 'bi bi-gem', false);
+    lista.innerHTML += crearItemPrecio('Plata', 'Ag', 32.50, 'USD/Onza', 'bi bi-database', false);
     lista.innerHTML += crearItemPrecio('Cobre', PRECIOS_REFERENCIA.cobre.simbolo, PRECIOS_REFERENCIA.cobre.precio, PRECIOS_REFERENCIA.cobre.unidad, PRECIOS_REFERENCIA.cobre.icono, false);
     lista.innerHTML += crearItemPrecio('Zinc', PRECIOS_REFERENCIA.zinc.simbolo, PRECIOS_REFERENCIA.zinc.precio, PRECIOS_REFERENCIA.zinc.unidad, PRECIOS_REFERENCIA.zinc.icono, false);
     lista.innerHTML += crearItemPrecio('Plomo', PRECIOS_REFERENCIA.plomo.simbolo, PRECIOS_REFERENCIA.plomo.precio, PRECIOS_REFERENCIA.plomo.unidad, PRECIOS_REFERENCIA.plomo.icono, false);

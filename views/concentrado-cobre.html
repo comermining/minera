@@ -365,106 +365,11 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <button class="btn btn-warning btn-lg px-5 py-2 fw-bold" onclick="calcularValorizacionCompleta()">
-                            <i class="bi bi-calculator me-2"></i> CALCULAR VALORIZACIÓN
-                        </button>
                         <button class="btn btn-success btn-lg px-5 py-2 fw-bold ms-3" onclick="generarPDF()">
                             <i class="bi bi-file-pdf me-2"></i> GENERAR PDF
                         </button>
                     </div>
-
-                    <div id="tablaResultados">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" style="font-size: 0.85rem;">
-                                <!-- PAGOS -->
-                                <thead class="table-light">
-                                    <tr class="text-center"><th colspan="6">PAGOS</th></tr>
-                                    <tr class="table-secondary">
-                                        <th style="width: 25%">Concepto</th>
-                                        <th style="width: 15%">Factor</th>
-                                        <th style="width: 10%">Operador</th>
-                                        <th style="width: 25%">Valor</th>
-                                        <th style="width: 15%">Unidad</th>
-                                        <th style="width: 10%">Resultado ($/TMS)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>COBRE (Cu)</strong></td>
-                                        <td class="text-end"><span id="pagoCuFactor">0.0000</span></td>
-                                        <td class="text-center">x</td>
-                                        <td class="text-end"><span id="pagoCuValor">0.00</span></td>
-                                        <td>$/TM</td>
-                                        <td class="text-end fw-bold text-primary"><span id="pagoCuResultado">0.00</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>ORO (Au)</strong></td>
-                                        <td class="text-end"><span id="pagoAuFactor">0.0000</span></td>
-                                        <td class="text-center">x</td>
-                                        <td class="text-end"><span id="pagoAuValor">0.00</span></td>
-                                        <td>$/Oz</td>
-                                        <td class="text-end fw-bold text-warning"><span id="pagoAuResultado">0.00</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>PLATA (Ag)</strong></td>
-                                        <td class="text-end"><span id="pagoAgFactor">0.0000</span></td>
-                                        <td class="text-center">x</td>
-                                        <td class="text-end"><span id="pagoAgValor">0.00</span></td>
-                                        <td>$/Oz</td>
-                                        <td class="text-end fw-bold text-secondary"><span id="pagoAgResultado">0.00</span></td>
-                                    </tr>
-                                </tbody>
-
-                                <!-- DEDUCCIONES -->
-                                <thead class="table-light">
-                                    <tr class="text-center"><th colspan="6">DEDUCCIONES</th></tr>
-                                    <tr class="table-secondary">
-                                        <th style="width: 25%">Concepto</th>
-                                        <th style="width: 15%">Factor</th>
-                                        <th style="width: 10%">Operador</th>
-                                        <th style="width: 25%">Valor</th>
-                                        <th style="width: 15%">Unidad</th>
-                                        <th style="width: 10%">Resultado ($/TMS)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><strong>Maquila</strong></td><td class="text-end">-</td><td class="text-center"></td><td class="text-end"><span id="dedMaquilaValor">0.00</span></td><td>$/TMS</td><td class="text-end text-danger"><span id="dedMaquilaResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Gastos Refinación Cu</strong></td><td class="text-end"><span id="refCuFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refCuValor">0.00</span></td><td>$/TM</td><td class="text-end text-danger"><span id="refCuResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Gastos Refinación Au</strong></td><td class="text-end"><span id="refAuFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refAuValor">0.00</span></td><td>$/Oz</td><td class="text-end text-danger"><span id="refAuResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Gastos Refinación Ag</strong></td><td class="text-end"><span id="refAgFactor">0.0000</span></td><td class="text-center">x</td><td class="text-end"><span id="refAgValor">0.00</span></td><td>$/Oz</td><td class="text-end text-danger"><span id="refAgResultado">0.00</span></td></tr>
-                                </tbody>
-
-                                <!-- PENALIDADES -->
-                                <thead class="table-light">
-                                    <tr class="text-center"><th colspan="7">PENALIDADES</th></tr>
-                                    <tr class="table-secondary">
-                                        <th style="width: 20%">Concepto</th>
-                                        <th style="width: 12%">Valor (O)</th>
-                                        <th style="width: 8%">Libre (P)</th>
-                                        <th style="width: 8%">Por cada (Q)</th>
-                                        <th style="width: 10%">Penalidad (R)</th>
-                                        <th style="width: 10%">Unidades</th>
-                                        <th style="width: 12%">Resultado ($/TMS)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><strong>As+Sb</strong></td><td class="text-end"><span id="penalidadAsSbValorMostrar">0.00</span>%</td><td class="text-end">0.3%</td><td class="text-end">0.1%</td><td class="text-end">$3.50</td><td class="text-end"><span id="penalidadAsSbUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadAsSbResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Pb+Zn</strong></td><td class="text-end"><span id="penalidadPbZnValorMostrar">0.00</span>%</td><td class="text-end">5.0%</td><td class="text-end">0.5%</td><td class="text-end">$5.00</td><td class="text-end"><span id="penalidadPbZnUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadPbZnResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Bi</strong></td><td class="text-end"><span id="penalidadBiValorMostrar">0.00</span>%</td><td class="text-end">0.05%</td><td class="text-end">0.01%</td><td class="text-end">$6.00</td><td class="text-end"><span id="penalidadBiUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadBiResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Hg</strong></td><td class="text-end"><span id="penalidadHgValorMostrar">0.00</span> ppm</td><td class="text-end">20 ppm</td><td class="text-end">10 ppm</td><td class="text-end">$7.00</td><td class="text-end"><span id="penalidadHgUnidades">0.00</span></td><td class="text-end text-danger"><span id="penalidadHgResultado">0.00</span></td></tr>
-                                    <tr><td><strong>Servicios (Análisis)</strong></td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end">-</td><td class="text-end text-danger"><span id="analisisResultado">0.00</span></td></tr>
-                                </tbody>
-
-                                <!-- RESULTADOS FINALES -->
-                                <tbody>
-                                    <tr class="table-warning"><td colspan="6"><strong>TOTAL DE DEDUCCIONES</strong></td><td class="text-end fw-bold text-danger fs-5"><span id="totalDeducciones">0.00</span></td></tr>
-                                    <tr class="table-success"><td colspan="6"><strong>TOTAL /TM (US $/TMS)</strong></td><td class="text-end fw-bold fs-5"><span id="valorPorTMS">0.00</span></td></tr>
-                                    <tr><td colspan="3"><strong>IGV %</strong></td><td colspan="4"><span id="igvPorcentaje">18</span>%</td></tr>
-                                    <tr class="table-primary"><td colspan="6"><strong class="fs-4">TOTAL POR LOTE (US $)</strong></td><td class="text-end"><strong class="fs-3 text-primary"><span id="valorTotalConIGV">$0.00</span></strong></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
