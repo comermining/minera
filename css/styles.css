@@ -560,3 +560,52 @@ flex: 0 0 150px !important;
 max-width: 150px !important;
 }
 }
+
+/* ===== CARRUSEL PARA TARJETAS DE ACORDEONES (MÓVIL) ===== */
+@media (max-width: 991.98px) {
+    /* Convertir las cuadrículas en carruseles horizontales */
+    .mineral-grid, 
+    .cursos-grid, 
+    .balance-grid, 
+    .prediseno-grid, 
+    .ingenieria-grid {
+        display: flex !important;           /* Usar flexbox */
+        flex-wrap: nowrap !important;       /* No saltos de línea */
+        overflow-x: auto !important;        /* Scroll horizontal */
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+        gap: 0.75rem;
+    }
+
+    /* Ajustar cada tarjeta */
+    .mineral-item, 
+    .curso-item, 
+    .balance-item, 
+    .prediseno-item, 
+    .ingenieria-item {
+        flex: 0 0 auto !important;          /* Ancho automático según contenido */
+        min-width: 160px !important;        /* Ancho mínimo para que no se aplasten */
+        max-width: 200px !important;        /* Ancho máximo para mantener uniformidad */
+        white-space: normal !important;     /* PERMITE saltos de línea */
+        text-align: center;                 /* Texto centrado */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 0.5rem;
+        height: auto;
+    }
+
+    /* Ajustar texto interno */
+    .mineral-item span, 
+    .curso-item span, 
+    .balance-item span, 
+    .prediseno-item span, 
+    .ingenieria-item span {
+        display: block;
+        line-height: 1.3;
+        font-size: 0.85rem;                 /* Tamaño de letra legible */
+        word-break: break-word;             /* Evita desbordes en palabras largas */
+        margin-top: 0.5rem;
+    }
+}

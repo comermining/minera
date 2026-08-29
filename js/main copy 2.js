@@ -5,15 +5,28 @@
 const PRECIOS_API_KEY = 'd6e89ca362a244d6e4518ea310bb8479';
 const PRECIOS_BASE_URL = 'https://api.metalpriceapi.com/v1/latest';
 
-// Precios referenciales
+// // Precios referenciales
+// const PRECIOS_REFERENCIA = {
+//     oro: { precio: 2915.00, unidad: 'USD/Onza', simbolo: 'Au', icono: 'bi bi-gem' },
+//     plata: { precio: 32.50, unidad: 'USD/Onza', simbolo: 'Ag', icono: 'bi bi-database' },
+//     cobre: { precio: 4.85, unidad: 'USD/Libra', simbolo: 'Cu', icono: 'bi bi-c-circle' },
+//     zinc: { precio: 1.42, unidad: 'USD/Libra', simbolo: 'Zn', icono: 'bi bi-bar-chart' },
+//     plomo: { precio: 1.05, unidad: 'USD/Libra', simbolo: 'Pb', icono: 'bi bi-box' },
+//     platino: { precio: 995.00, unidad: 'USD/Onza', simbolo: 'Pt', icono: 'bi bi-cpu' }
+// };
+
+// Precios referenciales (unidades según imagen)
 const PRECIOS_REFERENCIA = {
-    oro:    { precio: 4454.93, unidad: 'Onz Troy', simbolo: 'Au', icono: 'bi bi-gem' },
-    plata:  { precio: 66.38,   unidad: 'Onz Troy', simbolo: 'Ag', icono: 'bi bi-database' },
-    cobre:  { precio: 0.41,    unidad: 'Onz', simbolo: 'Cu', icono: 'bi bi-c-circle' },
-    zinc:   { precio: 1.35,    unidad: 'Onz', simbolo: 'Zn', icono: 'bi bi-bar-chart' },
-    plomo:  { precio: 0.05,    unidad: 'Onz', simbolo: 'Pb', icono: 'bi bi-box' },
-    platino:{ precio: 1826.92, unidad: 'Onz Troy', simbolo: 'Pt', icono: 'bi bi-cpu' }
+    oro:    { precio: 2915.00, unidad: 'Onz', simbolo: 'Au', icono: 'bi bi-gem' },
+    plata:  { precio: 32.50,   unidad: 'Onz', simbolo: 'Ag', icono: 'bi bi-database' },
+    cobre:  { precio: 4.85,    unidad: 'lb',  simbolo: 'Cu', icono: 'bi bi-c-circle' },
+    zinc:   { precio: 1.42,    unidad: 'lb',  simbolo: 'Zn', icono: 'bi bi-bar-chart' },
+    plomo:  { precio: 1.05,    unidad: 'lb',  simbolo: 'Pb', icono: 'bi bi-box' },
+    platino:{ precio: 995.00,  unidad: 'Onz', simbolo: 'Pt', icono: 'bi bi-cpu' }
 };
+
+// Factor de conversión de onza a libra (para metales base)
+const OZ_TO_LB = 14.5833; // 1 onza troy = 14.5833 libras
 
 // Función para obtener precios de metales
 async function fetchMetalPrices() {
@@ -28,7 +41,8 @@ async function fetchMetalPrices() {
     content.style.display = 'none';
     
     try {
-        const url = `${PRECIOS_BASE_URL}?api_key=${PRECIOS_API_KEY}&base=USD&currencies=XAU,XAG,XPT,XCU,XPB,ZNC`;
+        // const url = `${PRECIOS_BASE_URL}?api_key=${PRECIOS_API_KEY}&base=USD&currencies=XAU,XAG`;
+        const url = `${PRECIOS_BASE_URL}?api_key=${PRECIOS_API_KEY}&base=USD&currencies=XAU,XAG,XPT,XCU,XZN,XPB`;
         const response = await fetch(url);
         const data = await response.json();
         
@@ -40,30 +54,30 @@ async function fetchMetalPrices() {
             
             const rates = data.rates;
             lista.innerHTML = '';
+            
+            // Oro
+            const oroPrice = rates.XAU || PRECIOS_REFERENCIA.oro.precio;
+            lista.innerHTML += crearItemPrecio('Oro', PRECIOS_REFERENCIA.oro.simbolo, oroPrice, PRECIOS_REFERENCIA.oro.unidad, PRECIOS_REFERENCIA.oro.icono, !!rates.XAU);
 
-            // ORO (Onz Troy)
-            const oroPrice = rates.USDXAU || PRECIOS_REFERENCIA.oro.precio;
-            lista.innerHTML += crearItemPrecio('Oro', PRECIOS_REFERENCIA.oro.simbolo, oroPrice, PRECIOS_REFERENCIA.oro.unidad, PRECIOS_REFERENCIA.oro.icono, !!rates.USDXAU);
+            // Plata
+            const plataPrice = rates.XAG || PRECIOS_REFERENCIA.plata.precio;
+            lista.innerHTML += crearItemPrecio('Plata', PRECIOS_REFERENCIA.plata.simbolo, plataPrice, PRECIOS_REFERENCIA.plata.unidad, PRECIOS_REFERENCIA.plata.icono, !!rates.XAG);
 
-            // PLATA (Onz Troy)
-            const plataPrice = rates.USDXAG || PRECIOS_REFERENCIA.plata.precio;
-            lista.innerHTML += crearItemPrecio('Plata', PRECIOS_REFERENCIA.plata.simbolo, plataPrice, PRECIOS_REFERENCIA.plata.unidad, PRECIOS_REFERENCIA.plata.icono, !!rates.USDXAG);
+            // Cobre
+            const cobrePrice = rates.XCU || PRECIOS_REFERENCIA.cobre.precio;
+            lista.innerHTML += crearItemPrecio('Cobre', PRECIOS_REFERENCIA.cobre.simbolo, cobrePrice, PRECIOS_REFERENCIA.cobre.unidad, PRECIOS_REFERENCIA.cobre.icono, !!rates.XCU);
 
-            // PLATINO (Onz Troy)
-            const platinoPrice = rates.USDXPT || PRECIOS_REFERENCIA.platino.precio;
-            lista.innerHTML += crearItemPrecio('Platino', PRECIOS_REFERENCIA.platino.simbolo, platinoPrice, PRECIOS_REFERENCIA.platino.unidad, PRECIOS_REFERENCIA.platino.icono, !!rates.USDXPT);
+            // Zinc
+            const zincPrice = rates.XZN || PRECIOS_REFERENCIA.zinc.precio;
+            lista.innerHTML += crearItemPrecio('Zinc', PRECIOS_REFERENCIA.zinc.simbolo, zincPrice, PRECIOS_REFERENCIA.zinc.unidad, PRECIOS_REFERENCIA.zinc.icono, !!rates.XZN);
 
-            // COBRE (Onz común)
-            const cobrePrice = rates.USDXCU || PRECIOS_REFERENCIA.cobre.precio;
-            lista.innerHTML += crearItemPrecio('Cobre', PRECIOS_REFERENCIA.cobre.simbolo, cobrePrice, PRECIOS_REFERENCIA.cobre.unidad, PRECIOS_REFERENCIA.cobre.icono, !!rates.USDXCU);
+            // Plomo
+            const plomoPrice = rates.XPB || PRECIOS_REFERENCIA.plomo.precio;
+            lista.innerHTML += crearItemPrecio('Plomo', PRECIOS_REFERENCIA.plomo.simbolo, plomoPrice, PRECIOS_REFERENCIA.plomo.unidad, PRECIOS_REFERENCIA.plomo.icono, !!rates.XPB);
 
-            // ZINC (Onz común)
-            const zincPrice = rates.USDZNC || PRECIOS_REFERENCIA.zinc.precio;
-            lista.innerHTML += crearItemPrecio('Zinc', PRECIOS_REFERENCIA.zinc.simbolo, zincPrice, PRECIOS_REFERENCIA.zinc.unidad, PRECIOS_REFERENCIA.zinc.icono, !!rates.USDZNC);
-
-            // PLOMO (Onz común)
-            const plomoPrice = rates.USDXPB || PRECIOS_REFERENCIA.plomo.precio;
-            lista.innerHTML += crearItemPrecio('Plomo', PRECIOS_REFERENCIA.plomo.simbolo, plomoPrice, PRECIOS_REFERENCIA.plomo.unidad, PRECIOS_REFERENCIA.plomo.icono, !!rates.USDXPB);
+            // Platino
+            const platinoPrice = rates.XPT || PRECIOS_REFERENCIA.platino.precio;
+            lista.innerHTML += crearItemPrecio('Platino', PRECIOS_REFERENCIA.platino.simbolo, platinoPrice, PRECIOS_REFERENCIA.platino.unidad, PRECIOS_REFERENCIA.platino.icono, !!rates.XPT);            
             
             loader.style.display = 'none';
             content.style.display = 'block';

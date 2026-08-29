@@ -9,7 +9,8 @@ const routes = {
     'concentrado-zinc': { file: 'views/concentrado-zinc.html', title: 'Concentrado de Zinc', requireLogin: true },
     'mineral-oro-plata': { file: 'views/mineral-oro-plata.html', title: 'Mineral de Oro y Plata', requireLogin: true },
     'mineral-cobre-oro-plata-menor': { file: 'views/mineral-cobre-oro-plata-menor.html', title: 'Mineral de Cobre, Oro y Plata (<10%)', requireLogin: true },
-    'concentrado-cobre-oro-plata-mayor': { file: 'views/concentrado-cobre-oro-plata-mayor.html', title: 'Concentrado de Cobre, Oro y Plata (>10%)', requireLogin: true }
+    'concentrado-cobre-oro-plata-mayor': { file: 'views/concentrado-cobre-oro-plata-mayor.html', title: 'Concentrado de Cobre, Oro y Plata (>10%)', requireLogin: true },
+    'asesor-chat': { file: 'views/asesor-chat.html', title: 'Asesor Virtual', requireLogin: true }
 };
 
 // Cargar una vista
